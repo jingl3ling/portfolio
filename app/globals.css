@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;          /* dominant: white */
+  --ink: #0b0b0c;         /* near-black text */
+  --muted: #6e6e76;       /* secondary text */
+  --faint: #9a9aa2;       /* tertiary / captions */
+  --line: #e8e8e4;        /* hairlines */
+  --accent: #db2777;      /* the single accent — bold magenta */
+  --accent-ink: #a81e5b;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --font-display: var(--font-fraunces);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-jetbrains);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* page-wide ambient: soft drifting orbs behind all content */
+.ambient {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+}
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  will-change: transform;
+  animation-name: drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(var(--dx, 20px), var(--dy, -24px)); }
+}
+
+::selection { background: var(--accent); color: #fff; }
+a { color: inherit; text-decoration: none; }
+
+/* ---- reusable ---- */
+.wrap { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 1.5rem; }
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.display { font-family: var(--font-display); font-weight: 340; letter-spacing: -0.02em; line-height: 0.98; }
+
+/* animated signal divider */
+.sigline path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0.45;
+  stroke-dasharray: 6 10;
+  animation: sigflow 3s linear infinite;
+}
+@keyframes sigflow { to { stroke-dashoffset: -32; } }
+
+/* ---- custom cursor ---- */
+.cursor-dot {
+  position: fixed; top: 0; left: 0; width: 12px; height: 12px; border-radius: 9999px;
+  background: var(--accent); pointer-events: none; z-index: 90; mix-blend-mode: multiply;
+  transition: width .18s ease, height .18s ease, background .18s ease;
+}
+.cursor-dot.is-lg { width: 46px; height: 46px; background: color-mix(in srgb, var(--accent) 22%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+  body.cursor-none, body.cursor-none * { cursor: none; }
+}
+@media (hover: none), (pointer: coarse) { .cursor-dot { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .cursor-dot { display: none; }
 }
