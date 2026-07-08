@@ -1,3 +1,11 @@
+// const ORBS = [
+//   { top: "6%", left: "60%", size: 540, color: "#aeb6c2", opacity: 0.16, dx: "30px", dy: "-30px", dur: "18s", delay: "0s" },
+//   { top: "24%", left: "-6%", size: 440, color: "#8892a0", opacity: 0.12, dx: "-24px", dy: "22px", dur: "22s", delay: "-4s" },
+//   { top: "50%", left: "78%", size: 480, color: "#c2c8d0", opacity: 0.12, dx: "22px", dy: "28px", dur: "20s", delay: "-8s" },
+//   { top: "70%", left: "10%", size: 420, color: "#9aa7b5", opacity: 0.1, dx: "26px", dy: "-18px", dur: "24s", delay: "-3s" },
+//   { top: "88%", left: "64%", size: 400, color: "#8892a0", opacity: 0.1, dx: "-20px", dy: "-24px", dur: "19s", delay: "-6s" },
+// ];
+
 const ORBS = [
   { top: "6%", left: "60%", size: 540, color: "#8b5cff", opacity: 0.16, dx: "30px", dy: "-30px", dur: "18s", delay: "0s" },
   { top: "24%", left: "-6%", size: 440, color: "#db2777", opacity: 0.12, dx: "-24px", dy: "22px", dur: "22s", delay: "-4s" },
@@ -5,6 +13,7 @@ const ORBS = [
   { top: "70%", left: "10%", size: 420, color: "#8b5cff", opacity: 0.1, dx: "26px", dy: "-18px", dur: "24s", delay: "-3s" },
   { top: "88%", left: "64%", size: 400, color: "#db2777", opacity: 0.1, dx: "-20px", dy: "-24px", dur: "19s", delay: "-6s" },
 ];
+
 
 export default function Ambient() {
   return (

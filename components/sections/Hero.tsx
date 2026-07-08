@@ -49,7 +49,7 @@ const fade: Variants = {
   }),
 };
 
-export default function Hero() {
+export default function Hero({ tint }: { tint?: string }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -72,7 +72,7 @@ export default function Hero() {
           style={{ y: yBg }}
           className="pointer-events-none absolute inset-0 opacity-90"
         >
-          <SignalCanvas />
+          <SignalCanvas tint={tint} />
         </motion.div>
       )}
 
