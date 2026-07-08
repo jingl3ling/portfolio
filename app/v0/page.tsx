@@ -8,11 +8,15 @@ import Contact from "@/components/sections/Contact";
 import SignalLine from "@/components/SignalLine";
 import WorkIndex from "@/components/WorkIndex";
 import Reveal from "@/components/Reveal";
+import V0Theme from "@/components/v0/V0Theme";
+import V0Ambient from "@/components/v0/V0Ambient";
 
 export default function V0() {
   return (
     <main>
-      <Hero />
+      <V0Theme />
+      <V0Ambient />
+      <Hero tint="#cdd2d8" />
       <About />
       <SignalLine />
 

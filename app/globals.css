@@ -63,6 +63,10 @@ body {
 html.immersive .ambient { display: none; }
 html.immersive .cursor-dot { mix-blend-mode: screen; }
 
+/* v0: its own pinned ambient; hide the shared global one on /v0 */
+.ambient-v0 { position: absolute; inset: 0; height: 100%; z-index: -10; pointer-events: none; overflow: hidden; }
+html.route-v0 .ambient { display: none; }
+
 /* v4: rotating cylinder title — text wrapped around a tilted ring */
 .cyl-spin { animation: cylspin 48s linear infinite; transform-style: preserve-3d; }
 @keyframes cylspin { to { transform: rotateY(360deg); } }
