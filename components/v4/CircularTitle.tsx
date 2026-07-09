@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion
 import { useEffect, useState } from "react";
 
 // one word repeated around the ring (like the reference)
-const CHARS = Array.from("Jing Huang · AI · Art · People · ");
+const CHARS = Array.from("Web Dev · AI · Art · Ventures · Engineer ·");
 const RADIUS = 240;
 
 export default function CircularTitle() {
@@ -22,7 +22,7 @@ export default function CircularTitle() {
   const scale = useTransform(scrollY, [0, vh * 0.8], [1, 1.5]);
   const opacity = useTransform(scrollY, [0, vh * 0.7], [1, 0]);
   // extra spin on scroll — lives on a SEPARATE element from the CSS base spin
-  const scrollSpin = useTransform(scrollY, [0, vh], [0, -90]);
+  const scrollSpin = useTransform(scrollY, [0, vh], [0, 90]);
 
   return (
     <>

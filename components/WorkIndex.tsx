@@ -10,7 +10,7 @@ const TABS: { key: Track; label: string }[] = [
   { key: "venture", label: "Ventures" },
 ];
 
-export default function WorkIndex() {
+export default function WorkIndex({ basePath = "/work" }: { basePath?: string }) {
   const [track, setTrack] = useState<Track>("technical");
   const reduced = useReducedMotion();
   const list = projects.filter((p) => p.track === track);
@@ -50,7 +50,7 @@ export default function WorkIndex() {
               }}
             >
               <Link
-                href={`/work/${p.slug}`}
+                href={`${basePath}/${p.slug}`}
                 data-cursor
                 className="group flex flex-col gap-5 border-b border-line py-8 md:flex-row md:items-center md:gap-8"
               >
@@ -61,7 +61,7 @@ export default function WorkIndex() {
                 {/* PLACEHOLDER — set project.image to a /public path to replace */}
                 <div className="w-full shrink-0 md:w-64">
                   <div
-                    className="flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl border border-line bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="flex aspect-[16/10] items-center justify-center overflow-hidden border border-line bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.03]"
                     style={
                       p.image
                         ? { backgroundImage: `url(${p.image})` }

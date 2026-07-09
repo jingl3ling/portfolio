@@ -6,9 +6,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
 import CircularTitle from "@/components/v4/CircularTitle";
 import LineTunnel from "@/components/v4/LineTunnel";
-import About from "@/components/sections/About";
+import TunnelWindows from "@/components/v4/TunnelWindows";
+import SplineBackground from "@/components/v4/SplineBackground";
+import AboutTunnel from "@/components/v4/AboutTunnel";
 import Experiments from "@/components/sections/Experiments";
-import Contact from "@/components/sections/Contact";
+import ContactAether from "@/components/v4/ContactAether";
 import WorkIndex from "@/components/WorkIndex";
 import Reveal from "@/components/Reveal";
 
@@ -59,6 +61,9 @@ export default function V4() {
       {/* STATEMENT background: dreamy colored time-tunnel, fades in on scroll */}
       <LineTunnel />
 
+      {/* one background tunnel, revealed only through the About cards' windows */}
+      <TunnelWindows />
+
       {/* ---------- HERO: rotating cylinder title ---------- */}
       <section
         id="top"
@@ -99,19 +104,26 @@ export default function V4() {
         </div>
       </section>
 
-      {/* ---------- readable content ---------- */}
-      <div className="relative bg-[#06070b]/90 backdrop-blur-sm">
-        <About />
-        <section id="work" className="wrap py-24 md:py-32">
-          <Reveal>
-            <h2 className="display mb-12 text-[clamp(2rem,6vw,4rem)]">
-              Selected Work
-            </h2>
-          </Reveal>
-          <WorkIndex />
+      {/* ---------- dark content; the tunnel only lives inside the About cards ---------- */}
+      <div className="relative bg-[#06070b]">
+        <AboutTunnel />
+        <section id="work">
+          {/* tall title band with a 3D Spline background */}
+          <div className="relative flex min-h-[70vh] items-end overflow-hidden">
+            <SplineBackground scene="https://prod.spline.design/us3ALejTXl6usHZ7/scene.splinecode" />
+            <div className="wrap relative z-10 pb-12">
+              <Reveal>
+                <h2 className="display text-[clamp(3rem,10vw,7rem)]">Selected Work</h2>
+              </Reveal>
+            </div>
+          </div>
+          {/* toggle + work list stay on black */}
+          <div className="wrap py-16 md:py-24">
+            <WorkIndex basePath="/v4/work" />
+          </div>
         </section>
         <Experiments />
-        <Contact />
+        <ContactAether />
       </div>
     </>
   );

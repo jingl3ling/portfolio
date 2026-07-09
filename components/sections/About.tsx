@@ -37,10 +37,13 @@ export default function About() {
       {/* intro: profile photo + statement */}
       <div className="grid items-start gap-12 md:grid-cols-[300px_1fr] md:gap-20">
         <Reveal>
-          {/* PLACEHOLDER — swap for a real portrait */}
-          <div className="flex aspect-[4/5] items-center justify-center rounded-2xl border border-line bg-[color-mix(in_srgb,var(--accent)_6%,white)]">
-            <span className="mono-label">Profile photo</span>
-          </div>
+          {/* put your photo at public/img/profile.png */}
+          <div
+            role="img"
+            aria-label="Jing Huang"
+            className="aspect-[4/5] bg-[color-mix(in_srgb,var(--accent)_6%,white)] bg-cover bg-center"
+            style={{ backgroundImage: "url(/img/profile.png)" }}
+          />
         </Reveal>
 
         <div>

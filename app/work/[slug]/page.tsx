@@ -83,7 +83,7 @@ export default async function WorkPage({
 
       {/* media placeholder — swap for real screenshots / video / diagram */}
       <Reveal delay={0.1}>
-        <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center rounded-2xl border border-line bg-[color-mix(in_srgb,var(--accent)_5%,white)]">
+        <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line bg-[color-mix(in_srgb,var(--accent)_5%,white)]">
           <span className="mono-label">Media coming soon</span>
         </div>
       </Reveal>
