@@ -26,6 +26,9 @@ html {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* stop off-screen elements (e.g. the 3D title ring) from widening the mobile
+     layout viewport, which would stretch fixed backgrounds past the phone width */
+  overflow-x: clip;
 }
 
 body {

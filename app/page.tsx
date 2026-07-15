@@ -76,7 +76,7 @@ export default function V4() {
       {/* ---------- HERO: rotating cylinder title ---------- */}
       <section
         id="top"
-        className="relative flex min-h-[100svh] flex-col items-center justify-center text-center"
+        className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-x-clip text-center"
       >
         <CircularTitle />
         <div className="pointer-events-none absolute inset-x-0 bottom-14 flex flex-col items-center gap-3">

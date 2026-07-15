@@ -22,7 +22,7 @@ const ORBS = [
 export default function Ambient() {
   const pathname = usePathname();
   // immersive routes have their own full-screen backgrounds — no pink ambient
-  if (pathname?.startsWith("/v4")) return null;
+  if (pathname === "/" || pathname?.startsWith("/v4") || pathname?.startsWith("/work")) return null;
 
   return (
     <div className="ambient" aria-hidden>
