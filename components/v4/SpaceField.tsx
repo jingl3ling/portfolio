@@ -16,7 +16,7 @@ function warpFromScroll() {
   return Math.max(0.12, 1 - (p - 1) * 1.1);
 }
 
-function Field() {
+function Field({ enableWarp }: { enableWarp: boolean }) {
   const ref = useRef<THREE.Points>(null);
   const matRef = useRef<THREE.PointsMaterial>(null);
   const warp = useRef(0);
@@ -58,7 +58,7 @@ function Field() {
   useFrame((_, delta) => {
     const pts = ref.current;
     if (!pts) return;
-    warp.current += (warpFromScroll() - warp.current) * 0.08;
+    warp.current += ((enableWarp ? warpFromScroll() : 0) - warp.current) * 0.08;
     const w = warp.current;
     const arr = pts.geometry.attributes.position.array as Float32Array;
 
@@ -122,14 +122,19 @@ function Field() {
   );
 }
 
-export default function SpaceField() {
+export default function SpaceField({ warp = true }: { warp?: boolean }) {
   const [active, setActive] = useState(true);
   useEffect(() => {
+    // no warp (e.g. work pages): stars just drift, keep it running always
+    if (!warp) {
+      setActive(true);
+      return;
+    }
     const on = () => setActive(window.scrollY < window.innerHeight * 1.4);
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
-  }, []);
+  }, [warp]);
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10">
@@ -139,7 +144,7 @@ export default function SpaceField() {
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
       >
-        <Field />
+        <Field enableWarp={warp} />
       </Canvas>
     </div>
   );

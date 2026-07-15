@@ -3,9 +3,9 @@ import ShaderBackground from "@/components/v4/ShaderBackground";
 
 const LINKS = [
   { label: "Email", href: "mailto:jinghuang809@gmail.com", note: "jinghuang809@gmail.com" },
-  { label: "LinkedIn", href: "#", note: "→ add URL" },
-  { label: "GitHub", href: "#", note: "→ add URL" },
-  { label: "Resume", href: "/resume.pdf", note: "PDF" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/jinghuang2022/", note: "→ Jing Huang" },
+  { label: "GitHub", href: "https://github.com/jingl3ling", note: "→ jingl3ling" },
+  { label: "Resume", href: "/Resume.pdf", note: "→ Resume" },
 ];
 
 export default function ContactAether() {
@@ -29,7 +29,8 @@ export default function ContactAether() {
         <Reveal>
           <a
             href="mailto:jinghuang809@gmail.com"
-            className="inline-block rounded-full bg-ink px-7 py-3.5 text-bg transition-transform hover:-translate-y-0.5"
+            style={{ color: "#000" }}
+            className="inline-block rounded-full bg-ink px-7 py-3.5 transition-transform hover:-translate-y-0.5"
           >
             jinghuang809@gmail.com
           </a>

@@ -24,7 +24,7 @@ const SKILLS = [
 // tunnel to every `.tunnel-window`); the translucent bg keeps text readable
 function TunnelCard({ children }: { children: ReactNode }) {
   return (
-    <div className="tunnel-window relative z-[6] rounded-2xl border border-line p-7 [text-shadow:0_1px_14px_rgba(0,0,0,0.9)]">
+    <div className="tunnel-window relative z-[6] h-full rounded-2xl border border-line p-7 [text-shadow:0_1px_14px_rgba(0,0,0,0.9)]">
       {children}
     </div>
   );
@@ -34,7 +34,7 @@ export default function AboutTunnel() {
   return (
     <section id="about" className="wrap py-28 md:py-40">
       {/* intro: profile + statement (dark background) */}
-      <div className="grid items-start gap-12 md:grid-cols-[300px_1fr] md:gap-20">
+      <div className="grid items-start gap-12 md:grid-cols-[240px_1fr] md:gap-20">
         <Reveal>
           <div
             role="img"
@@ -63,7 +63,7 @@ export default function AboutTunnel() {
 
       {/* education · experience · skills — tunnel lives inside these cards */}
       <div className="mt-24 grid gap-4 md:mt-32 md:grid-cols-3">
-        <Reveal>
+        <Reveal className="h-full">
           <TunnelCard>
             <h3 className="font-display text-2xl">Education</h3>
             <div className="mt-2">
@@ -78,7 +78,7 @@ export default function AboutTunnel() {
           </TunnelCard>
         </Reveal>
 
-        <Reveal delay={0.06}>
+        <Reveal delay={0.06} className="h-full">
           <TunnelCard>
             <h3 className="font-display text-2xl">Experience</h3>
             <div className="mt-2">
@@ -93,7 +93,7 @@ export default function AboutTunnel() {
           </TunnelCard>
         </Reveal>
 
-        <Reveal delay={0.12}>
+        <Reveal delay={0.12} className="h-full">
           <TunnelCard>
             <h3 className="font-display text-2xl">Skills</h3>
             <div className="mt-2">

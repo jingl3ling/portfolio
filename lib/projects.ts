@@ -209,26 +209,47 @@ export interface Experiment {
   href?: string;
 }
 
+// export const experiments: Experiment[] = [
+//   {
+//     title: "Spurlock Museum — Visit Page",
+//     year: "2022",
+//     blurb:
+//       "Redesigned the museum's visit page with custom icons and map instructions in the UIUC brand system; built in Figma + SASS.",
+//     href: "https://www.spurlock.illinois.edu/visit/",
+//   },
+//   {
+//     title: "Blues Dancing — Online Exhibition",
+//     year: "2022",
+//     blurb:
+//       "Turned a physical Blues Dancing exhibition into a curated virtual one — photos, video, audio, and a web interface to the curator's spec.",
+//     href: "https://www.spurlock.illinois.edu/exhibits/online/blues/",
+//   },
+//   {
+//     title: "Music Composition",
+//     year: "2026",
+//     blurb:
+//       "To fill.",
+//   },
+// ];
+
 export const experiments: Experiment[] = [
   {
-    title: "Spurlock Museum — Visit Page",
-    year: "2022",
-    blurb:
-      "Redesigned the museum's visit page with custom icons and map instructions in the UIUC brand system; built in Figma + SASS.",
-    href: "https://www.spurlock.illinois.edu/visit/",
-  },
-  {
-    title: "Blues Dancing — Online Exhibition",
-    year: "2022",
-    blurb:
-      "Turned a physical Blues Dancing exhibition into a curated virtual one — photos, video, audio, and a web interface to the curator's spec.",
-    href: "https://www.spurlock.illinois.edu/exhibits/online/blues/",
-  },
-  {
-    title: "Juliann Xu — Composer Portfolio",
+    title: "TO FILL",
     year: "2026",
     blurb:
-      "Client work: an editorial, highly interactive portfolio for a film composer — hand-built HTML/CSS/JS with animated SVG motifs.",
+      "To fill",
+  },
+  {
+    title: "TO FILL",
+    year: "2026",
+    blurb:
+      "To fill",
+  },
+  {
+    title: "TO FILL",
+    year: "2026",
+    blurb:
+      "To fill",
   },
 ];
 

@@ -34,6 +34,15 @@ export default function V4() {
     return () => window.removeEventListener("resize", on);
   }, []);
 
+  // returning from an individual work page (/v4#work): Lenis swallows the
+  // native hash jump, so scroll to the Selected Work section ourselves
+  useEffect(() => {
+    if (window.location.hash !== "#work") return;
+    requestAnimationFrame(() => {
+      document.getElementById("work")?.scrollIntoView();
+    });
+  }, []);
+
   // hero starfield fades out as the statement's tunnel fades in
   const { scrollY } = useScroll();
   const starsOpacity = useTransform(scrollY, [0, vh * 0.3, vh * 0.75], [1, 1, 0.1]);
@@ -118,7 +127,7 @@ export default function V4() {
             </div>
           </div>
           {/* toggle + work list stay on black */}
-          <div className="wrap py-16 md:py-24">
+          <div className="wrap pb-16 pt-8 md:pb-24 md:pt-10">
             <WorkIndex basePath="/v4/work" />
           </div>
         </section>

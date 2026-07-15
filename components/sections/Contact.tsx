@@ -2,9 +2,9 @@ import Reveal from "@/components/Reveal";
 
 const LINKS = [
   { label: "Email", href: "mailto:jinghuang809@gmail.com", note: "jinghuang809@gmail.com" },
-  { label: "LinkedIn", href: "#", note: "→ add URL" },
-  { label: "GitHub", href: "#", note: "→ add URL" },
-  { label: "Resume", href: "/resume.pdf", note: "PDF" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/jinghuang2022/", note: "→ Jing Huang" },
+  { label: "GitHub", href: "https://github.com/jingl3ling", note: "→ jingl3ling" },
+  { label: "Resume", href: "/Resume.pdf", note: "→ Resume" },
 ];
 
 export default function Contact() {

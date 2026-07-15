@@ -6,6 +6,10 @@
 //   { top: "88%", left: "64%", size: 400, color: "#8892a0", opacity: 0.1, dx: "-20px", dy: "-24px", dur: "19s", delay: "-6s" },
 // ];
 
+"use client";
+
+import { usePathname } from "next/navigation";
+
 const ORBS = [
   { top: "6%", left: "60%", size: 540, color: "#8b5cff", opacity: 0.16, dx: "30px", dy: "-30px", dur: "18s", delay: "0s" },
   { top: "24%", left: "-6%", size: 440, color: "#db2777", opacity: 0.12, dx: "-24px", dy: "22px", dur: "22s", delay: "-4s" },
@@ -16,6 +20,10 @@ const ORBS = [
 
 
 export default function Ambient() {
+  const pathname = usePathname();
+  // immersive routes have their own full-screen backgrounds — no pink ambient
+  if (pathname?.startsWith("/v4")) return null;
+
   return (
     <div className="ambient" aria-hidden>
       {ORBS.map((o, i) => {

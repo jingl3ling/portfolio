@@ -46,6 +46,27 @@ export default function LineTunnel() {
     resize();
     window.addEventListener("resize", resize);
 
+    // cursor position (canvas px) — used to locally bend the streaks near it
+    let mx = -9999, my = -9999;
+    const onMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mx = e.clientX - rect.left;
+      my = e.clientY - rect.top;
+    };
+    const onLeave = () => { mx = -9999; my = -9999; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseout", onLeave);
+    const DR = 150; // distortion radius (px)
+    const distort = (x: number, y: number): [number, number] => {
+      const dx = x - mx, dy = y - my;
+      const d = Math.hypot(dx, dy);
+      if (d < DR && d > 0.0001) {
+        const push = (1 - d / DR) * 34; // bulge lines away from the cursor
+        return [x + (dx / d) * push, y + (dy / d) * push];
+      }
+      return [x, y];
+    };
+
     type Streak = { angle: number; r: number; len: number; speed: number; color: string; width: number };
     const make = (atStart = false): Streak => ({
       angle: Math.random() * Math.PI * 2,
@@ -78,10 +99,8 @@ export default function LineTunnel() {
         const sa = Math.sin(s.angle);
         const grow = s.r / maxR;
         const len = s.len * (0.4 + grow * 1.8);
-        const x1 = cx + ca * s.r;
-        const y1 = cy + sa * s.r;
-        const x2 = cx + ca * (s.r + len);
-        const y2 = cy + sa * (s.r + len);
+        const [x1, y1] = distort(cx + ca * s.r, cy + sa * s.r);
+        const [x2, y2] = distort(cx + ca * (s.r + len), cy + sa * (s.r + len));
         const alpha = Math.sin(grow * Math.PI) * 0.5;
         const width = s.width * (0.5 + grow * 2.4);
 
@@ -111,6 +130,8 @@ export default function LineTunnel() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseout", onLeave);
     };
   }, [reduced]);
 

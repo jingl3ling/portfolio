@@ -17,13 +17,13 @@ export default function WorkIndex({ basePath = "/work" }: { basePath?: string })
 
   return (
     <div>
-      <div className="mb-10 flex gap-2">
+      <div className="mb-10 flex gap-3">
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTrack(t.key)}
             aria-pressed={track === t.key}
-            className={`rounded-full px-5 py-2 text-sm transition-colors ${
+            className={`rounded-full px-7 py-2.5 text-base font-medium transition-colors ${
               track === t.key
                 ? "bg-ink text-bg"
                 : "border border-line hover:border-ink"

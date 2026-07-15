@@ -8,6 +8,9 @@ export default function SmoothScroll() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    // expose so route changes can force scroll position (Lenis persists across
+    // client navigations and would otherwise keep the previous scroll target)
+    (window as unknown as { lenis?: Lenis }).lenis = lenis;
     let raf = 0;
     const loop = (time: number) => {
       lenis.raf(time);
@@ -17,6 +20,7 @@ export default function SmoothScroll() {
 
     return () => {
       cancelAnimationFrame(raf);
+      delete (window as unknown as { lenis?: Lenis }).lenis;
       lenis.destroy();
     };
   }, []);

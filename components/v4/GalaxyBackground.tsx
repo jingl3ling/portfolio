@@ -5,14 +5,15 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useInView } from "@/components/v4/useInView";
 
-function Galaxy() {
+function Galaxy({ zoom }: { zoom: { current: number } }) {
   const group = useRef<THREE.Group>(null);
   const ptr = useRef({ x: 0, y: 0 });
   const eased = useRef({ x: 0, y: 0 });
   const spin = useRef(0);
+  const ez = useRef(1);
 
   const { positions, colors } = useMemo(() => {
-    const count = 40000;
+    const count = 80000;
     const radiusMax = 20;       // was 15
     const spiralArms = 2;       // was 4 (branchAngle % 4)
     const spiralTightness = 2.5; // was hardcoded 1.2
@@ -77,6 +78,9 @@ function Galaxy() {
     eased.current.y += (ptr.current.y * 0.35 - eased.current.y) * 0.05;
     g.rotation.y = spin.current + eased.current.x;
     g.rotation.x = eased.current.y;
+    // ease the scroll-driven zoom
+    ez.current += (zoom.current - ez.current) * 0.1;
+    g.scale.setScalar(ez.current);
   });
 
   return (
@@ -100,6 +104,47 @@ function Galaxy() {
 
 export default function GalaxyBackground() {
   const { ref, inView } = useInView();
+  const zoom = useRef(1);
+
+  // while the cursor is within the galaxy band, the wheel zooms it and page
+  // scroll is suppressed; move the cursor off the band to scroll again.
+  // The work content sits on top of the galaxy, so hover is decided by testing
+  // the cursor position against the band rect (not mouseenter on the element).
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let mx = -9999, my = -9999;
+    const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
+    const inside = () => {
+      const b = el.getBoundingClientRect();
+      const shrink = b.height * 0.2; // shrinks 20% off top and bottom = 60% effective height
+      const top = b.top + shrink;
+      const bottom = b.bottom - shrink;
+      return mx >= b.left && mx <= b.right && my >= top && my <= bottom;
+    };
+    const MAX = 2.6, MIN = 0.4;
+    const onWheel = (e: WheelEvent) => {
+      if (!inside()) return;
+      const zoomingIn = e.deltaY < 0;
+      // at the zoom limits, let the wheel fall through to page scroll
+      if ((zoomingIn && zoom.current >= MAX) || (!zoomingIn && zoom.current <= MIN)) {
+        return;
+      }
+      // capture-phase + stopImmediatePropagation blocks Lenis's smooth-wheel
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const f = zoomingIn ? 1.08 : 0.92;
+      zoom.current = Math.min(MAX, Math.max(MIN, zoom.current * f));
+    };
+    window.addEventListener("mousemove", onMove);
+    // capture:true so this runs before Lenis's window wheel listener
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("wheel", onWheel, { capture: true } as EventListenerOptions);
+    };
+  }, [ref]);
+
   return (
     <div ref={ref} className="absolute inset-0 overflow-hidden" style={{ background: "#000008" }}>
       <Canvas
@@ -108,7 +153,7 @@ export default function GalaxyBackground() {
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
       >
-        <Galaxy />
+        <Galaxy zoom={zoom} />
       </Canvas>
       {/* fade to black at edges + bottom so it blends with the section */}
       <div

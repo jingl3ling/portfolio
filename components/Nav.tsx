@@ -6,11 +6,11 @@ export default function Nav() {
           Jing Huang
         </a>
         <div className="hidden gap-8 text-sm sm:flex">
-          <a href="#work" className="transition-colors hover:text-accent">
-            Work
-          </a>
           <a href="#about" className="transition-colors hover:text-accent">
             About
+          </a>
+          <a href="#work" className="transition-colors hover:text-accent">
+            Work
           </a>
           <a href="#contact" className="transition-colors hover:text-accent">
             Contact

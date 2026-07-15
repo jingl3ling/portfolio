@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { projects, getProject } from "@/lib/projects";
 import Reveal from "@/components/Reveal";
+import WorkBackdrop from "@/components/v4/WorkBackdrop";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -35,6 +36,7 @@ export default async function WorkPage({
 
   return (
     <main className="wrap pt-32 pb-32 md:pt-40">
+      <WorkBackdrop />
       <Reveal>
         <Link
           href="/v4#work"
@@ -83,7 +85,7 @@ export default async function WorkPage({
 
       {/* media placeholder — swap for real screenshots / video / diagram */}
       <Reveal delay={0.1}>
-        <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line bg-[color-mix(in_srgb,var(--accent)_5%,white)]">
+        <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line bg-[color-mix(in_srgb,var(--accent)_8%,#0a0a12)]">
           <span className="mono-label">Media coming soon</span>
         </div>
       </Reveal>

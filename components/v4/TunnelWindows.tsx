@@ -37,6 +37,23 @@ export default function TunnelWindows() {
     resize();
     window.addEventListener("resize", resize);
 
+    // cursor position (viewport px) — used to locally bend the streaks near it
+    let mx = -9999, my = -9999;
+    const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
+    const onLeave = () => { mx = -9999; my = -9999; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseout", onLeave);
+    const DR = 150;
+    const distort = (x: number, y: number): [number, number] => {
+      const dx = x - mx, dy = y - my;
+      const d = Math.hypot(dx, dy);
+      if (d < DR && d > 0.0001) {
+        const push = (1 - d / DR) * 34;
+        return [x + (dx / d) * push, y + (dy / d) * push];
+      }
+      return [x, y];
+    };
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const COLORS = ["#f6cfe0", "#e7a6c4", "#d9b48f", "#c79a76", "#a9b6e0", "#ffffff"];
     type S = { angle: number; r: number; len: number; speed: number; color: string; width: number };
@@ -102,12 +119,14 @@ export default function TunnelWindows() {
         const sa = Math.sin(s.angle);
         const grow = s.r / maxR;
         const len = s.len * (0.4 + grow * 1.8);
+        const [x1, y1] = distort(cx + ca * s.r, cy + sa * s.r);
+        const [x2, y2] = distort(cx + ca * (s.r + len), cy + sa * (s.r + len));
         ctx.strokeStyle = s.color;
         ctx.globalAlpha = Math.sin(grow * Math.PI) * 0.5;
         ctx.lineWidth = s.width * (0.5 + grow * 2.4);
         ctx.beginPath();
-        ctx.moveTo(cx + ca * s.r, cy + sa * s.r);
-        ctx.lineTo(cx + ca * (s.r + len), cy + sa * (s.r + len));
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
       }
       ctx.globalAlpha = 1;
@@ -118,6 +137,8 @@ export default function TunnelWindows() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseout", onLeave);
     };
   }, []);
 
