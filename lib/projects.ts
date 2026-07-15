@@ -234,19 +234,19 @@ export interface Experiment {
 
 export const experiments: Experiment[] = [
   {
-    title: "TO FILL",
+    title: "TO FILL1",
     year: "2026",
     blurb:
       "To fill",
   },
   {
-    title: "TO FILL",
+    title: "TO FILL2",
     year: "2026",
     blurb:
       "To fill",
   },
   {
-    title: "TO FILL",
+    title: "TO FILL3",
     year: "2026",
     blurb:
       "To fill",
