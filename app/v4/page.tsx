@@ -7,7 +7,7 @@ import ImmersiveTheme from "@/components/ImmersiveTheme";
 import CircularTitle from "@/components/v4/CircularTitle";
 import LineTunnel from "@/components/v4/LineTunnel";
 import TunnelWindows from "@/components/v4/TunnelWindows";
-import SplineBackground from "@/components/v4/SplineBackground";
+import GalaxyBackground from "@/components/v4/GalaxyBackground";
 import AboutTunnel from "@/components/v4/AboutTunnel";
 import Experiments from "@/components/sections/Experiments";
 import ContactAether from "@/components/v4/ContactAether";
@@ -110,7 +110,7 @@ export default function V4() {
         <section id="work">
           {/* tall title band with a 3D Spline background */}
           <div className="relative flex min-h-[70vh] items-end overflow-hidden">
-            <SplineBackground scene="https://prod.spline.design/us3ALejTXl6usHZ7/scene.splinecode" />
+            <GalaxyBackground />
             <div className="wrap relative z-10 pb-12">
               <Reveal>
                 <h2 className="display text-[clamp(3rem,10vw,7rem)]">Selected Work</h2>

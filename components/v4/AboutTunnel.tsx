@@ -24,7 +24,7 @@ const SKILLS = [
 // tunnel to every `.tunnel-window`); the translucent bg keeps text readable
 function TunnelCard({ children }: { children: ReactNode }) {
   return (
-    <div className="tunnel-window relative z-[6] rounded-2xl border border-line bg-black/45 p-7">
+    <div className="tunnel-window relative z-[6] rounded-2xl border border-line p-7 [text-shadow:0_1px_14px_rgba(0,0,0,0.9)]">
       {children}
     </div>
   );

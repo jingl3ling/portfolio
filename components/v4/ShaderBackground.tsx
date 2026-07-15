@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useInView } from "@/components/v4/useInView";
 
 const FRAG = `#version 300 es
 precision highp float;
@@ -46,6 +47,11 @@ void main(){ gl_Position = vec4(position, 0.0, 1.0); }`;
 
 export default function ShaderBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { ref, inView } = useInView();
+  const inViewRef = useRef(inView);
+  useEffect(() => {
+    inViewRef.current = inView;
+  }, [inView]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -108,6 +114,11 @@ export default function ShaderBackground() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
     const draw = (now: number) => {
+      // pause the fragment loop when the contact band isn't on screen
+      if (!inViewRef.current) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(prog);
       if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
@@ -126,7 +137,7 @@ export default function ShaderBackground() {
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div ref={ref} className="absolute inset-0 overflow-hidden">
       <canvas
         ref={canvasRef}
         role="img"

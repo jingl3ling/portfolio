@@ -53,12 +53,14 @@ export default function TunnelWindows() {
 
     const syncClip = () => {
       const els = document.querySelectorAll<HTMLElement>(".tunnel-window");
+      let visible = false;
       rects.forEach((ref, i) => {
         const rect = ref.current;
         if (!rect) return;
         const el = els[i];
         if (el) {
           const b = el.getBoundingClientRect();
+          if (b.bottom > 0 && b.top < window.innerHeight) visible = true;
           rect.setAttribute("x", String(b.left));
           rect.setAttribute("y", String(b.top));
           rect.setAttribute("width", String(b.width));
@@ -68,11 +70,16 @@ export default function TunnelWindows() {
           rect.setAttribute("height", "0");
         }
       });
+      return visible;
     };
 
     let raf = 0;
     const frame = () => {
-      syncClip();
+      // pause the whole tunnel when none of the card windows are on screen
+      if (!syncClip()) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
       ctx.clearRect(0, 0, w, h);
 
       // color wash (vanishing point = viewport center)

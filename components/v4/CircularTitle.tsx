@@ -31,6 +31,8 @@ export default function CircularTitle() {
         style={reduced ? undefined : { scale, opacity }}
         className="flex w-full items-center justify-center"
       >
+        {/* shrink the whole ring on small screens */}
+        <div className="w-full origin-center scale-[0.55] sm:scale-75 md:scale-100">
         {/* perspective = how strongly the front looms vs the back */}
         <div style={{ perspective: "700px" }} className="grid h-[340px] w-full place-items-center">
           {/* tilt (bottom view) + optional scroll spin */}
@@ -62,6 +64,7 @@ export default function CircularTitle() {
               ))}
             </div>
           </motion.div>
+        </div>
         </div>
       </motion.div>
     </>

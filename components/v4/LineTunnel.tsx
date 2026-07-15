@@ -21,11 +21,9 @@ export default function LineTunnel() {
     return () => window.removeEventListener("resize", on);
   }, []);
 
-  // dreamy transition: fade + sharpen as you scroll hero → statement
+  // fade in (no blur — keep the tunnel crisp)
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, vh * 0.2, vh * 0.7], [0, 0, 1]);
-  const blurPx = useTransform(scrollY, [vh * 0.2, vh * 0.8], [28, 3]);
-  const filter = useTransform(blurPx, (b) => `blur(${b}px)`);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -63,23 +61,43 @@ export default function LineTunnel() {
 
     let raf = 0;
     const frame = () => {
+      // only animate while the statement tunnel is actually on screen
+      const sc = window.scrollY / (window.innerHeight || 1);
+      if (sc < 0.15 || sc > 2.4) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = "lighter";
       const step = reduced ? 0.3 : 1;
+
       for (const s of streaks) {
         s.r += s.speed * step;
         if (s.r > maxR) Object.assign(s, make(false));
         const ca = Math.cos(s.angle);
         const sa = Math.sin(s.angle);
-        const grow = s.r / maxR; // perspective: longer/brighter as it flies outward
+        const grow = s.r / maxR;
         const len = s.len * (0.4 + grow * 1.8);
         const x1 = cx + ca * s.r;
         const y1 = cy + sa * s.r;
         const x2 = cx + ca * (s.r + len);
         const y2 = cy + sa * (s.r + len);
+        const alpha = Math.sin(grow * Math.PI) * 0.5;
+        const width = s.width * (0.5 + grow * 2.4);
+
+        // soft glow: a wide, low-alpha colored line (additive) — cheap, no shadowBlur
         ctx.strokeStyle = s.color;
-        ctx.globalAlpha = Math.sin(grow * Math.PI) * 0.5;
-        ctx.lineWidth = s.width * (0.5 + grow * 2.4);
+        ctx.globalAlpha = alpha * 0.5;
+        ctx.lineWidth = width * 2.2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // crisp white core on top
+        ctx.strokeStyle = "#ffffff";
+        ctx.globalAlpha = alpha;
+        ctx.lineWidth = width * 0.5;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -100,7 +118,7 @@ export default function LineTunnel() {
     <motion.div
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10"
-      style={{ opacity, filter }}
+      style={{ opacity }}
     >
       <div className="absolute inset-0" style={{ background: WASH }} />
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />

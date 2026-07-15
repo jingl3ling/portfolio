@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const N = 3500;
@@ -123,9 +123,18 @@ function Field() {
 }
 
 export default function SpaceField() {
+  const [active, setActive] = useState(true);
+  useEffect(() => {
+    const on = () => setActive(window.scrollY < window.innerHeight * 1.4);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+
   return (
     <div className="pointer-events-none fixed inset-0 -z-10">
       <Canvas
+        frameloop={active ? "always" : "never"}
         camera={{ position: [0, 0, 8], fov: 62 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
