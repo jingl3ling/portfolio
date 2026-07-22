@@ -33,6 +33,45 @@ export default async function WorkPage({
   if (!project) notFound();
 
   const trackLabel = project.track === "technical" ? "Technical" : "Venture";
+  var projectMedia;
+  if (project.media_type === "image") {
+    projectMedia = (
+      <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line">
+        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+      </div>
+    );
+  } else if (project.media_type === "video") {
+    projectMedia = (
+      <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line">
+        <video src={project.video} controls className="w-full h-full object-cover" />
+      </div>
+    );
+  } else if (project.media_type === "3d") {
+    projectMedia = (
+      <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line">
+        {/* Placeholder for 3D content */}
+        <span className="mono-label">3D content coming soon</span>
+      </div>
+    );
+  } else if (project.media_type === "embeded") {
+    projectMedia = (
+      <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line">
+        <iframe
+          src={project.embed}
+          title={project.title}
+          className="w-full h-full"
+          frameBorder="0"
+          allowFullScreen
+        ></iframe>
+      </div>
+    );
+  } else {
+    projectMedia = (
+      <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line bg-[color-mix(in_srgb,var(--accent)_8%,#0a0a12)]">
+        <span className="mono-label">Media coming soon</span>
+      </div>
+    );
+  }
 
   return (
     <main className="wrap pt-32 pb-32 md:pt-40">
@@ -83,12 +122,7 @@ export default async function WorkPage({
         </Reveal>
       )}
 
-      {/* media placeholder — swap for real screenshots / video / diagram */}
-      <Reveal delay={0.1}>
-        <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line bg-[color-mix(in_srgb,var(--accent)_8%,#0a0a12)]">
-          <span className="mono-label">Media coming soon</span>
-        </div>
-      </Reveal>
+      {projectMedia}
 
       <div className="mt-16 grid gap-14 md:grid-cols-[2fr_1fr]">
         <div>

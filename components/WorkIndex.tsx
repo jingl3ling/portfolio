@@ -63,15 +63,15 @@ export default function WorkIndex({ basePath = "/work" }: { basePath?: string })
                   <div
                     className="flex aspect-[16/10] items-center justify-center overflow-hidden border border-line bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.03]"
                     style={
-                      p.image
-                        ? { backgroundImage: `url(${p.image})` }
+                      p.thumbnail
+                        ? { backgroundImage: `url(${p.thumbnail})` }
                         : {
                             backgroundColor:
                               "color-mix(in srgb, var(--accent) 6%, white)",
                           }
                     }
                   >
-                    {!p.image && <span className="mono-label">Image</span>}
+                    {!p.thumbnail && <span className="mono-label">Image</span>}
                   </div>
                 </div>
 

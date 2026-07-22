@@ -134,15 +134,15 @@ export default function V2() {
                   <div
                     className="flex aspect-[16/10] items-center justify-center rounded-xl border border-line bg-cover bg-center"
                     style={
-                      p.image
-                        ? { backgroundImage: `url(${p.image})` }
+                      p.thumbnail
+                        ? { backgroundImage: `url(${p.thumbnail})` }
                         : {
                             backgroundColor:
                               "color-mix(in srgb, var(--accent) 8%, white)",
                           }
                     }
                   >
-                    {!p.image && <span className="mono-label">Image</span>}
+                    {!p.thumbnail && <span className="mono-label">Image</span>}
                   </div>
                 </div>
                 <div className="flex-1">

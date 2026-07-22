@@ -1,5 +1,10 @@
+import dynamic from "next/dynamic";
 import Reveal from "@/components/Reveal";
-import ShaderBackground from "@/components/v4/ShaderBackground";
+
+// WebGL canvas, only needed once the contact band scrolls into view
+const ShaderBackground = dynamic(() => import("@/components/v4/ShaderBackground"), {
+  ssr: false,
+});
 
 const LINKS = [
   { label: "Email", href: "mailto:jinghuang809@gmail.com", note: "jinghuang809@gmail.com" },

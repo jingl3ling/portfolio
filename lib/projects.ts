@@ -13,7 +13,11 @@ export interface Project {
   role?: string;
   tagline: string; // one line for the index
   tags: string[];
-  image?: string; // /public path to a thumbnail; falls back to a placeholder
+  thumbnail?: string; // /public path to a thumbnail; falls back to a placeholder
+  media_type?: "image" | "video" | "3d" | "embeded"; // for the media placeholder; defaults to image
+  image?: string; // /public path to a image; falls back to a placeholder
+  video?: string; // /public path to a video; falls back to a placeholder
+  embed?: string; // /public path to an embedded content; falls back to a placeholder
   award?: string;
   overview: string; // case-study intro paragraph
   highlights: string[]; // achievement bullets (from resume)
@@ -26,6 +30,25 @@ export interface Project {
 export const projects: Project[] = [
   // ---------------- TECHNICAL ----------------
   {
+    slug: "openclaw-agent-team",
+    title: "OpenClaw Agent Team",
+    track: "technical",
+    year: "2026",
+    role: "Solo — architecture & orchestration",
+    tagline:
+      "A self-hosted multi-agent dev team in Discord — Claude orchestrates two local Ollama agents that write, review, and ship code straight to GitHub.",
+    tags: ["Multi-agent", "Discord", "Claude API", "Ollama"],
+    overview:
+      "A three-agent development team living in Discord: Deborah orchestrates as the boss, Ava writes code, and Marcus does QA. Deborah runs on an Anthropic Claude model while Ava and Marcus run on a smaller model served locally by Ollama on a Mac mini. A fine-grained GitHub personal access token lets the team read the repo, make changes, and push commits automatically.",
+    highlights: [
+      "Architected a 3-agent team — Deborah (orchestrator), Ava (writer), and Marcus (QA) — collaborating over Discord to plan, write, and review code.",
+      "Ran the orchestrator on Anthropic's Claude API while the writer and QA agents ran on a smaller model self-hosted with Ollama on a Mac mini.",
+      "Configured a fine-grained GitHub personal access token so the team can read/write the repo and push commits automatically, unattended.",
+    ],
+    stack: ["Discord API", "Claude API", "Ollama", "Mac mini", "GitHub API"],
+    featured: true,
+  },
+  {
     slug: "heartbeat-glowing-heart",
     title: "Heartbeat-Synced Glowing Heart",
     track: "technical",
@@ -34,6 +57,9 @@ export const projects: Project[] = [
     tagline:
       "A Wi-Fi IoT gift that pulses to a real heartbeat, with a Claude pipeline that turns biometric data into mood-based light.",
     tags: ["ESP32", "IoT", "Claude AI", "Fabrication"],
+    thumbnail: "img/heart_thumbnail.png",
+    image: "img/heart.jpg",
+    media_type: "image",
     overview:
       "A Mother's Day gift built end to end: an ESP32 microcontroller drives WS2812b LED strips to simulate a heartbeat, a companion app runs an integrated Claude AI pipeline that analyzes incoming heartbeat data, and the user can retune the device's light to reflect different moods. Housed in a hand-finished, laser-cut acrylic box with an SLA 3D-printed transparent heart.",
     highlights: [
@@ -51,6 +77,9 @@ export const projects: Project[] = [
     year: "2026",
     role: "Team of 4 — 3D engine & AI UX",
     award: "3rd Place — AI Tinkerers Claude Hackathon",
+    thumbnail: "img/immersive_gallery_thumb.avif",
+    media_type: "embeded",
+    embed: "https://immersive-gallery-five.vercel.app/",
     tagline:
       "An infinite-canvas digital gallery where a Claude assistant reshapes the environment in real time from natural-language prompts.",
     tags: ["React Three Fiber", "WebGL", "Claude AI", "Hackathon"],
@@ -76,6 +105,9 @@ export const projects: Project[] = [
     tagline:
       "A production React + Elasticsearch tool that queries and compares 68 majors and 211 degree programs on njit.edu.",
     tags: ["React", "TypeScript", "Elasticsearch", "Production"],
+    thumbnail: "img/degree_finder.png",
+    media_type: "image",
+    image: "/img/degree_finder.png",
     overview:
       "NJIT's interactive Degree Finder, shipped on the university's main site. Built in React and TypeScript with Elasticsearch to rapidly query, filter, and render academic data across 68 majors and 211 distinct degree programs, plus a custom degree comparison tool translated pixel-perfect from third-party vendor designs.",
     highlights: [
@@ -86,44 +118,6 @@ export const projects: Project[] = [
     stack: ["React", "TypeScript", "Elasticsearch", "Drupal", "Twig"],
     links: [{ label: "Live on njit.edu", href: "https://www.njit.edu/academics/degrees" }],
     featured: true,
-  },
-  {
-    slug: "njit-web-platform",
-    title: "NJIT Web Platform Engineering",
-    track: "technical",
-    year: "2023–present",
-    role: "Web Developer @ NJIT",
-    tagline:
-      "AI-assisted dev workflows, a university-wide Drupal 7→10 migration, and tooling that audits 30,000+ sites.",
-    tags: ["Drupal", "PHP", "AI Agents", "DevOps"],
-    overview:
-      "Ongoing platform engineering for NJIT: integrating AI agents into developer workflows, migrating the university web platform, and building automation at scale across tens of thousands of sites.",
-    highlights: [
-      "Integrated Openclaw AI agents into Slack to automate code reviews — a multi-agent system that accelerated feedback loops.",
-      "Orchestrated a university-wide Drupal 7→10 migration with Elasticsearch integration and PHP→Twig template rewrites.",
-      "Built a People Directory managing 2,300+ profiles via Workfolio APIs, compiled from React into the Drupal theme.",
-      "Wrote automated PHP scripts auditing 30,000+ sites to fix accessibility issues and purge dead 404 URLs.",
-      "Managed Acquia + Bluehost hosting, DNS, and secure SSH file/DB sync across dev, staging, and production.",
-    ],
-    stack: ["Drupal", "PHP", "React", "Elasticsearch", "Acquia", "SSH"],
-  },
-  {
-    slug: "gesture-speaker-wristband",
-    title: "Gesture-Controlled Speaker-Wristband",
-    track: "technical",
-    year: "2022",
-    role: "Senior Design — UIUC",
-    tagline:
-      "An Arduino wearable + speaker system controlled by hand gestures, with ambient lighting over Bluetooth.",
-    tags: ["Arduino", "Embedded", "Bluetooth", "IMU"],
-    overview:
-      "A gesture-controlled speaker-and-wristband system with ambient lighting, conceived, designed, and built for senior design. The wristband reads motion from an IMU and drives audio + light on the speaker over a Bluetooth link.",
-    highlights: [
-      "Designed and built a gesture-controlled speaker-wristband with ambient lighting using Arduino.",
-      "Established a Bluetooth link between speaker and wristband via AT mode on an HC-05 module.",
-      "Integrated an MPU9250 IMU with a 16x4 LCD, WS2812b lightstrip, and an 8-ohm speaker.",
-    ],
-    stack: ["Arduino", "HC-05 Bluetooth", "MPU9250 IMU", "WS2812b", "C/C++"],
   },
 
   // ---------------- VENTURES ----------------
@@ -137,6 +131,9 @@ export const projects: Project[] = [
     tagline:
       "An AI wellness planner taken from research to a live beta web + iOS app, pitched to investors across the startup ecosystem.",
     tags: ["Startup", "AI", "Full-stack", "iOS"],
+    thumbnail: "img/althy_logo.png",
+    media_type: "embeded",
+    embed: "https://www.althyplanner.com/",
     overview:
       "Althy is an AI wellness planning app. As founder I directed a 4-person team across UI/UX, user research, and business development — translating a 50-student survey into a prioritized roadmap (syllabus parsing, wellness tracking, calendar sharing), engineering the alpha/beta, and shipping live web + iOS betas for active user testing.",
     highlights: [

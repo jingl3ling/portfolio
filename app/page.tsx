@@ -5,16 +5,19 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
 import CircularTitle from "@/components/v4/CircularTitle";
-import LineTunnel from "@/components/v4/LineTunnel";
-import TunnelWindows from "@/components/v4/TunnelWindows";
-import GalaxyBackground from "@/components/v4/GalaxyBackground";
+import Tunnel from "@/components/v4/Tunnel";
 import AboutTunnel from "@/components/v4/AboutTunnel";
 import Experiments from "@/components/sections/Experiments";
 import ContactAether from "@/components/v4/ContactAether";
 import WorkIndex from "@/components/WorkIndex";
 import Reveal from "@/components/Reveal";
 
+// each is a WebGL/three.js canvas needed only once its section scrolls into
+// view — split out of the initial bundle so first paint isn't waiting on them
 const SpaceField = dynamic(() => import("@/components/v4/SpaceField"), {
+  ssr: false,
+});
+const GalaxyBackground = dynamic(() => import("@/components/v4/GalaxyBackground"), {
   ssr: false,
 });
 
@@ -67,11 +70,9 @@ export default function V4() {
         />
       </motion.div>
 
-      {/* STATEMENT background: dreamy colored time-tunnel, fades in on scroll */}
-      <LineTunnel />
-
-      {/* one background tunnel, revealed only through the About cards' windows */}
-      <TunnelWindows />
+      {/* shared time-tunnel: full-bleed behind STATEMENT, then clipped to the
+          About cards' windows — one canvas, one particle system, two looks */}
+      <Tunnel />
 
       {/* ---------- HERO: rotating cylinder title ---------- */}
       <section
@@ -88,8 +89,8 @@ export default function V4() {
       </section>
 
       {/* ---------- STATEMENT + see-through windows (tunnel shows through) ---------- */}
-      <section className="relative flex min-h-[100svh] items-center py-24">
-        <div className="wrap">
+      <section id="statement" className="relative flex min-h-[100svh] items-center py-24">
+        <div className="wrap relative z-10">
           <Reveal>
             <h2 className="display max-w-[15ch] text-[clamp(2.2rem,7vw,5.5rem)] [text-shadow:0_2px_30px_rgba(0,0,0,0.65)]">
               I build <span className="text-accent">everywhere</span> — where AI,
@@ -117,7 +118,7 @@ export default function V4() {
       <div className="relative bg-[#06070b]">
         <AboutTunnel />
         <section id="work">
-          {/* tall title band with a 3D Spline background */}
+          {/* tall title band with a 3D galaxy canvas background */}
           <div className="relative flex min-h-[70vh] items-end overflow-hidden">
             <GalaxyBackground />
             <div className="wrap relative z-10 pb-12">
