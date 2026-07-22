@@ -1,5 +1,5 @@
 import Reveal from "@/components/Reveal";
-import { experiments } from "@/lib/projects";
+import { experiments, type Experiment } from "@/lib/projects";
 
 export default function Experiments() {
   return (
@@ -18,11 +18,26 @@ export default function Experiments() {
                 data-cursor
                 className="group block h-full border-t border-line pt-5 transition-colors hover:border-ink"
               >
-                <ExperimentBody title={e.title} year={e.year} blurb={e.blurb} link />
+                <ExperimentBody
+                  title={e.title}
+                  year={e.year}
+                  blurb={e.blurb}
+                  kind={e.kind}
+                  image={e.image}
+                  audio={e.audio}
+                  link
+                />
               </a>
             ) : (
               <div className="h-full border-t border-line pt-5">
-                <ExperimentBody title={e.title} year={e.year} blurb={e.blurb} />
+                <ExperimentBody
+                  title={e.title}
+                  year={e.year}
+                  blurb={e.blurb}
+                  kind={e.kind}
+                  image={e.image}
+                  audio={e.audio}
+                />
               </div>
             )}
           </Reveal>
@@ -36,21 +51,44 @@ function ExperimentBody({
   title,
   year,
   blurb,
+  kind,
+  image,
+  audio,
   link,
 }: {
   title: string;
   year: string;
   blurb: string;
+  kind?: Experiment["kind"];
+  image?: string;
+  audio?: string;
   link?: boolean;
 }) {
   return (
     <>
+      {kind === "painting" && (
+        <div
+          className="mb-4 flex aspect-[4/5] items-center justify-center overflow-hidden border border-line bg-cover bg-center"
+          style={
+            image
+              ? { backgroundImage: `url(${image})` }
+              : { backgroundColor: "color-mix(in srgb, var(--accent) 6%, white)" }
+          }
+        >
+          {!image && <span className="mono-label">Painting</span>}
+        </div>
+      )}
       <div className="mono-label mb-3">{year}</div>
       <h3 className="font-display text-xl transition-colors group-hover:text-accent">
         {title}
         {link && <span className="text-accent"> ↗</span>}
       </h3>
       <p className="mt-2 text-sm leading-relaxed text-muted">{blurb}</p>
+      {kind === "music" && (
+        <audio controls className="mt-4 w-full" src={audio}>
+          Your browser doesn&apos;t support audio playback.
+        </audio>
+      )}
     </>
   );
 }

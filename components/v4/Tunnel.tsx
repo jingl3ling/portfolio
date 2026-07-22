@@ -30,6 +30,10 @@ const NEBULA_SCALE = 0.28; // render the nebula this small, then upscale — che
 
 const STREAK_COLORS = ["#ffffff", "#dfe9ff", "#cfe0ff", "#f6cfe0", "#e0c9ff"];
 
+// same dark tone as the About section's own background, so the wave that
+// closes the tunnel blends straight into what it's revealing
+const CLOSE_COLOR = "#06070b";
+
 type Streak = {
   angle: number;
   r: number;
@@ -80,6 +84,11 @@ export default function Tunnel() {
 
     let w = 0, h = 0, cx = 0, cy = 0, maxR = 1;
     let bg: HTMLCanvasElement | null = null;
+    // spring-driven position of the closing wave's baseline (px, screen
+    // space) — a real mass-spring-damper, so the arc naturally overshoots
+    // and settles in whichever direction the scroll is currently pushing it
+    let waveY = 0;
+    let waveVel = 0;
 
     // nebula only — no blur filter (that was the slow part); a small buffer
     // scaled up onto the main canvas reads as soft haze for near-zero cost
@@ -127,6 +136,8 @@ export default function Tunnel() {
       cx = w / 2;
       cy = h / 2;
       maxR = Math.hypot(w, h) / 2 + 80;
+      waveY = h; // snap the wave back to fully open on resize
+      waveVel = 0;
       bake();
     };
     resize();
@@ -191,17 +202,50 @@ export default function Tunnel() {
     const statementEl = document.getElementById("statement");
     const aboutEl = document.getElementById("about");
 
+    // the closing wave (see drawClosingWave below) plays out while About's
+    // top edge crosses from CLOSE_START down to CLOSE_END — "full" mode owns
+    // that whole span so the wave has room to bounce before "windows" mode
+    // takes over the hand-off to the About cards
+    // CLOSE_END is deliberately still positive: the handoff to "windows" mode
+    // (where the canvas can only paint inside the About cards, never over
+    // real content) happens just before the About section's top edge reaches
+    // the viewport — well before its "I'm Jing" intro text scrolls into view
+    // — so that text is never at risk of getting covered by the wave
+    const CLOSE_START = 0.4; // ×vh below the viewport bottom: wave starts
+    const CLOSE_END = 0.1; // ×vh still below the viewport top: wave has landed
+
     // where we are, purely from current layout — no "did we already leave"
     // bookkeeping needed, so it stays correct scrolling in either direction
     const computePhase = (): "hidden" | "full" | "windows" => {
       if (!statementEl || !aboutEl) return "hidden";
       const vh = window.innerHeight;
       const a = aboutEl.getBoundingClientRect();
-      if (a.top < vh && a.bottom > 0) return "windows";
       if (a.bottom <= 0) return "hidden"; // scrolled past the About section
+      if (a.top <= vh * CLOSE_END) return "windows";
       const s = statementEl.getBoundingClientRect();
-      if (s.top < vh) return "full"; // between the statement and the About cards
+      if (s.top < vh) return "full"; // statement through the closing wave
       return "hidden"; // still in the hero, haven't reached the statement yet
+    };
+
+    // one big arc — peaks at center, tapers to the baseline at both edges —
+    // instead of a repeating ripple; its height grows with how fast the
+    // spring is currently moving, so it's a flat edge at rest and bulges
+    // into a single wave right as it's bouncing
+    const drawClosingWave = () => {
+      const amp = Math.min(50, Math.abs(waveVel) * 2.4);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = CLOSE_COLOR;
+      ctx.beginPath();
+      ctx.moveTo(0, h + 2);
+      ctx.lineTo(0, waveY);
+      for (let x = 0; x <= w; x += 16) {
+        const y = waveY - Math.sin((x / w) * Math.PI) * amp;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(w, h + 2);
+      ctx.closePath();
+      ctx.fill();
     };
 
     let raf = 0;
@@ -220,6 +264,8 @@ export default function Tunnel() {
           setRect(i, b.left, b.top, b.width, b.height);
         });
         canvas.style.opacity = "1";
+        waveY = 0;
+        waveVel = 0;
       } else {
         // one full-viewport rect = an effectively unclipped canvas
         setRect(0, 0, 0, w, h);
@@ -227,13 +273,19 @@ export default function Tunnel() {
         setRect(2, 0, 0, 0, 0);
         const vh = window.innerHeight;
         const sTop = statementEl!.getBoundingClientRect().top;
-        const fadeIn = Math.max(0, Math.min(1, (vh - sTop) / (vh * 0.6)));
-        // ease out as the About section's plain dark background approaches,
-        // so it dissolves in rather than getting clipped away instantly
-        // right as the phase flips to "windows"
+        const fadeIn = Math.max(0, Math.min(1, (vh - sTop) / (vh * 0.45)));
+        canvas.style.opacity = String(fadeIn);
+
+        // once About starts closing in, spring the wave's baseline toward
+        // where it should be — the spring's own overshoot is the bounce, and
+        // since it's chasing a target that moves with the scroll, reversing
+        // scroll direction naturally reverses which way it bounces
         const aTop = aboutEl!.getBoundingClientRect().top;
-        const fadeOut = Math.max(0, Math.min(1, (aTop - vh) / (vh * 0.5)));
-        canvas.style.opacity = String(fadeIn * fadeOut);
+        const raw = Math.max(0, Math.min(1, (vh * CLOSE_START - aTop) / (vh * (CLOSE_START - CLOSE_END))));
+        const targetY = h * (1 - raw);
+        waveVel += (targetY - waveY) * 0.16;
+        waveVel *= 0.8;
+        waveY += waveVel;
       }
 
       t += reduced ? 0.006 : 0.016;
@@ -298,6 +350,9 @@ export default function Tunnel() {
       }
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
+      // only in "full" mode — in "windows" mode the clip-path already does
+      // the hiding, and painting over it here would blank out the windows
+      if (phase === "full" && (waveY < h - 0.5 || Math.abs(waveVel) > 0.05)) drawClosingWave();
       raf = requestAnimationFrame(frame);
     };
 

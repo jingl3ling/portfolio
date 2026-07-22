@@ -38,6 +38,9 @@ export const projects: Project[] = [
     tagline:
       "A self-hosted multi-agent dev team in Discord — Claude orchestrates two local Ollama agents that write, review, and ship code straight to GitHub.",
     tags: ["Multi-agent", "Discord", "Claude API", "Ollama"],
+    thumbnail: "/img/hacks_thumbnail.JPG",
+    media_type: "image",
+    image: "/img/hacks.jpg",
     overview:
       "A three-agent development team living in Discord: Deborah orchestrates as the boss, Ava writes code, and Marcus does QA. Deborah runs on an Anthropic Claude model while Ava and Marcus run on a smaller model served locally by Ollama on a Mac mini. A fine-grained GitHub personal access token lets the team read the repo, make changes, and push commits automatically.",
     highlights: [
@@ -57,8 +60,8 @@ export const projects: Project[] = [
     tagline:
       "A Wi-Fi IoT gift that pulses to a real heartbeat, with a Claude pipeline that turns biometric data into mood-based light.",
     tags: ["ESP32", "IoT", "Claude AI", "Fabrication"],
-    thumbnail: "img/heart_thumbnail.png",
-    image: "img/heart.jpg",
+    thumbnail: "/img/heart_thumbnail.png",
+    image: "/img/heart.jpg",
     media_type: "image",
     overview:
       "A Mother's Day gift built end to end: an ESP32 microcontroller drives WS2812b LED strips to simulate a heartbeat, a companion app runs an integrated Claude AI pipeline that analyzes incoming heartbeat data, and the user can retune the device's light to reflect different moods. Housed in a hand-finished, laser-cut acrylic box with an SLA 3D-printed transparent heart.",
@@ -77,7 +80,7 @@ export const projects: Project[] = [
     year: "2026",
     role: "Team of 4 — 3D engine & AI UX",
     award: "3rd Place — AI Tinkerers Claude Hackathon",
-    thumbnail: "img/immersive_gallery_thumb.avif",
+    thumbnail: "/img/immersive_gallery_thumb.avif",
     media_type: "embeded",
     embed: "https://immersive-gallery-five.vercel.app/",
     tagline:
@@ -105,7 +108,7 @@ export const projects: Project[] = [
     tagline:
       "A production React + Elasticsearch tool that queries and compares 68 majors and 211 degree programs on njit.edu.",
     tags: ["React", "TypeScript", "Elasticsearch", "Production"],
-    thumbnail: "img/degree_finder.png",
+    thumbnail: "/img/degree_finder.png",
     media_type: "image",
     image: "/img/degree_finder.png",
     overview:
@@ -131,7 +134,7 @@ export const projects: Project[] = [
     tagline:
       "An AI wellness planner taken from research to a live beta web + iOS app, pitched to investors across the startup ecosystem.",
     tags: ["Startup", "AI", "Full-stack", "iOS"],
-    thumbnail: "img/althy_logo.png",
+    thumbnail: "/img/althy_logo.png",
     media_type: "embeded",
     embed: "https://www.althyplanner.com/",
     overview:
@@ -153,6 +156,10 @@ export const projects: Project[] = [
     track: "venture",
     year: "2025",
     role: "NSF I-Corps — customer discovery lead",
+    thumbnail: "/img/dream2product_thumbnail.png",
+    media_type: "embeded",
+    embed: "https://glory-vote-50157517.figma.site/",
+    award: "NSF I-Corps — customer discovery grant",
     tagline:
       "B2B customer discovery for a manufacturing platform — 20+ interviews turned into user-centric prototypes and strategy.",
     tags: ["NSF I-Corps", "B2B", "Product Discovery", "Figma"],
@@ -170,13 +177,18 @@ export const projects: Project[] = [
     title: "TeamUp",
     track: "venture",
     year: "2026",
-    role: "Founder",
-    tagline: "A new venture — details coming soon.",
-    tags: ["Startup"],
+    role: "Founder — Northeast Regional I-Corps, customer discovery lead",
+    tagline:
+      "Customer discovery through the Northeast Regional I-Corps for a platform that helps students find teammates for courses, hackathons, and personal projects.",
+    tags: ["I-Corps", "Startup", "Product Discovery", "Ed-tech"],
     overview:
-      "TeamUp is an early-stage venture. Full write-up in progress — check back soon.",
-    highlights: ["Details coming soon."],
-    stack: [],
+      "TeamUp is a platform for students to find project teammates — for a class, a hackathon, or a personal side project. Through the Northeast Regional I-Corps program, I ran structured customer discovery to validate the problem and shape the product direction before building.",
+    highlights: [
+      "Completed the Northeast Regional I-Corps program, running structured customer discovery interviews to validate the problem before building.",
+      "Validated demand for a teammate-matching platform for students across coursework, hackathons, and personal projects.",
+      "Translated interview findings into a prioritized product direction and go-to-market hypothesis.",
+    ],
+    stack: ["I-Corps", "Customer discovery", "Market research"],
   },
   {
     slug: "otb-english",
@@ -198,55 +210,35 @@ export const projects: Project[] = [
   },
 ];
 
-// smaller creative / web pieces (shown in Experiments, not the main toggle)
+// smaller creative / web pieces (shown in the Experiments & creative section)
 export interface Experiment {
   title: string;
   year: string;
   blurb: string;
   href?: string;
+  kind?: "painting" | "music"; // picks the placeholder treatment below
+  image?: string; // /public path to a painting photo, once one exists
+  audio?: string; // /public path to a track, once one exists
 }
-
-// export const experiments: Experiment[] = [
-//   {
-//     title: "Spurlock Museum — Visit Page",
-//     year: "2022",
-//     blurb:
-//       "Redesigned the museum's visit page with custom icons and map instructions in the UIUC brand system; built in Figma + SASS.",
-//     href: "https://www.spurlock.illinois.edu/visit/",
-//   },
-//   {
-//     title: "Blues Dancing — Online Exhibition",
-//     year: "2022",
-//     blurb:
-//       "Turned a physical Blues Dancing exhibition into a curated virtual one — photos, video, audio, and a web interface to the curator's spec.",
-//     href: "https://www.spurlock.illinois.edu/exhibits/online/blues/",
-//   },
-//   {
-//     title: "Music Composition",
-//     year: "2026",
-//     blurb:
-//       "To fill.",
-//   },
-// ];
 
 export const experiments: Experiment[] = [
   {
-    title: "TO FILL1",
+    title: "Untitled Painting I",
     year: "2026",
-    blurb:
-      "To fill",
+    blurb: "Acrylic on canvas — painting coming soon.",
+    kind: "painting",
   },
   {
-    title: "TO FILL2",
+    title: "Untitled Painting II",
     year: "2026",
-    blurb:
-      "To fill",
+    blurb: "Acrylic on canvas — painting coming soon.",
+    kind: "painting",
   },
   {
-    title: "TO FILL3",
+    title: "Untitled Track",
     year: "2026",
-    blurb:
-      "To fill",
+    blurb: "Original composition — track coming soon.",
+    kind: "music",
   },
 ];
 

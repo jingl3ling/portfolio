@@ -31,7 +31,7 @@ export default function ContactAether() {
 
       {/* email + links + footer stay on black */}
       <div className="wrap py-16 md:py-20">
-        <Reveal>
+        <Reveal className="text-center">
           <a
             href="mailto:jinghuang809@gmail.com"
             style={{ color: "#000" }}

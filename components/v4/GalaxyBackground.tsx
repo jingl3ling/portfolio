@@ -125,7 +125,7 @@ export default function GalaxyBackground() {
     const MAX = 2.6, MIN = 0.4;
     const onWheel = (e: WheelEvent) => {
       if (!inside()) return;
-      const zoomingIn = e.deltaY < 0;
+      const zoomingIn = e.deltaY > 0;
       // at the zoom limits, let the wheel fall through to page scroll
       if ((zoomingIn && zoom.current >= MAX) || (!zoomingIn && zoom.current <= MIN)) {
         return;

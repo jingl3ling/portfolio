@@ -37,13 +37,28 @@ export default function V4() {
     return () => window.removeEventListener("resize", on);
   }, []);
 
-  // returning from an individual work page (/v4#work): Lenis swallows the
-  // native hash jump, so scroll to the Selected Work section ourselves
+  // where we land on mount: coming back from a work page (/#work) jumps to
+  // the Selected Work section; a fresh load or refresh always starts at the
+  // top. Lenis persists across client navigations and swallows the native
+  // hash jump, and the browser can restore a stale scroll offset on reload,
+  // so both cases are taken over explicitly here rather than left to chance.
   useEffect(() => {
-    if (window.location.hash !== "#work") return;
-    requestAnimationFrame(() => {
-      document.getElementById("work")?.scrollIntoView();
-    });
+    const lenis = (window as unknown as {
+      lenis?: { scrollTo: (t: number | HTMLElement, o?: object) => void };
+    }).lenis;
+    const jump = () => {
+      const work = window.location.hash === "#work" ? document.getElementById("work") : null;
+      if (work) {
+        if (lenis) lenis.scrollTo(work, { immediate: true });
+        else work.scrollIntoView();
+      } else if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+    };
+    jump();
+    requestAnimationFrame(jump);
   }, []);
 
   // hero starfield fades out as the statement's tunnel fades in
