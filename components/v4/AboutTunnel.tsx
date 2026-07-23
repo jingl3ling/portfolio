@@ -45,8 +45,11 @@ function InfoCard({ children }: { children: ReactNode }) {
 export default function AboutTunnel() {
   return (
     <section id="about" className="wrap py-28 md:py-40">
-      {/* intro: profile + statement (dark background) */}
-      <div className="grid items-start gap-12 md:grid-cols-[240px_1fr] md:gap-20">
+      {/* intro: profile + statement (dark background). Explicit z-10, same
+          as the statement heading — this content must never be coverable by
+          the fixed cloud/wave layer (z-5) behind it, regardless of whether
+          its clip-path/opacity transition is exactly in sync during scroll */}
+      <div className="relative z-10 grid items-start gap-12 md:grid-cols-[240px_1fr] md:gap-20">
         <Reveal>
           <div
             role="img"

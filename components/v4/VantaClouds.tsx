@@ -243,10 +243,14 @@ export default function VantaClouds() {
     <>
       <svg width="0" height="0" aria-hidden style={{ position: "absolute" }}>
         <defs>
+          {/* explicit 0-size defaults — Safari has rendered a `clip-path`
+              referencing rects with no attributes at all as "unclipped"
+              rather than "clipped to nothing" during the gap before the
+              first frame() call sets real coordinates */}
           <clipPath id="cloudClip" clipPathUnits="userSpaceOnUse">
-            <rect ref={r0} rx="16" />
-            <rect ref={r1} rx="16" />
-            <rect ref={r2} rx="16" />
+            <rect ref={r0} x="0" y="0" width="0" height="0" rx="16" />
+            <rect ref={r1} x="0" y="0" width="0" height="0" rx="16" />
+            <rect ref={r2} x="0" y="0" width="0" height="0" rx="16" />
           </clipPath>
         </defs>
       </svg>
@@ -254,7 +258,17 @@ export default function VantaClouds() {
         ref={wrapRef}
         aria-hidden
         className="pointer-events-none fixed left-0 top-0 h-full w-full"
-        style={{ opacity: 0, zIndex: 5, clipPath: "url(#cloudClip)", WebkitClipPath: "url(#cloudClip)" }}
+        style={{
+          opacity: 0,
+          zIndex: 5,
+          clipPath: "url(#cloudClip)",
+          WebkitClipPath: "url(#cloudClip)",
+          // forces Safari to give this its own GPU compositing layer —
+          // fixed + clip-path + WebGL is a known combination for Safari to
+          // occasionally show a stale/gray paint or ignore stacking order on
+          transform: "translateZ(0)",
+          WebkitTransform: "translateZ(0)",
+        }}
       >
         <div ref={hostRef} className="h-full w-full" />
       </div>
@@ -262,7 +276,7 @@ export default function VantaClouds() {
         ref={waveCanvasRef}
         aria-hidden
         className="pointer-events-none fixed left-0 top-0"
-        style={{ zIndex: 5 }}
+        style={{ zIndex: 5, transform: "translateZ(0)", WebkitTransform: "translateZ(0)" }}
       />
     </>
   );
