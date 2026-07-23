@@ -20,11 +20,23 @@ const SKILLS = [
   { group: "Cloud & Data", items: "AWS · GCP · Azure · PostgreSQL · MongoDB · Neo4j" },
 ];
 
-// a window into the single shared background tunnel (TunnelWindows clips the
-// tunnel to every `.tunnel-window`); the translucent bg keeps text readable
-function TunnelCard({ children }: { children: ReactNode }) {
+// a window into the shared VantaClouds background (VantaClouds clips itself
+// to every `.cloud-window`). The cloud shader brightens toward the bottom of
+// the frame (like looking down through haze), which is exactly where these
+// cards' lower rows of text sit — text-shadow alone doesn't hold up against
+// that much bright white, so a gradient scrim guarantees contrast underneath
+// regardless of how bright the clouds get.
+function InfoCard({ children }: { children: ReactNode }) {
   return (
-    <div className="tunnel-window relative z-[6] h-full rounded-2xl border border-line p-7 [text-shadow:0_1px_14px_rgba(0,0,0,0.9)]">
+    <div className="cloud-window relative z-[6] h-full overflow-hidden rounded-2xl border border-line p-7 [text-shadow:0_1px_14px_rgba(0,0,0,0.9)]">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(4,6,10,0.2) 0%, rgba(4,6,10,0.4) 45%, rgba(4,6,10,0.8) 100%)",
+        }}
+      />
       {children}
     </div>
   );
@@ -61,10 +73,10 @@ export default function AboutTunnel() {
         </div>
       </div>
 
-      {/* education · experience · skills — tunnel lives inside these cards */}
+      {/* education · experience · skills */}
       <div className="mt-24 grid gap-4 md:mt-32 md:grid-cols-3">
         <Reveal className="h-full">
-          <TunnelCard>
+          <InfoCard>
             <h3 className="font-display text-2xl">Education</h3>
             <div className="mt-2">
               {EDUCATION.map((e) => (
@@ -75,11 +87,11 @@ export default function AboutTunnel() {
                 </div>
               ))}
             </div>
-          </TunnelCard>
+          </InfoCard>
         </Reveal>
 
         <Reveal delay={0.06} className="h-full">
-          <TunnelCard>
+          <InfoCard>
             <h3 className="font-display text-2xl">Experience</h3>
             <div className="mt-2">
               {EXPERIENCE.map((e) => (
@@ -90,11 +102,11 @@ export default function AboutTunnel() {
                 </div>
               ))}
             </div>
-          </TunnelCard>
+          </InfoCard>
         </Reveal>
 
         <Reveal delay={0.12} className="h-full">
-          <TunnelCard>
+          <InfoCard>
             <h3 className="font-display text-2xl">Skills</h3>
             <div className="mt-2">
               {SKILLS.map((s) => (
@@ -104,7 +116,7 @@ export default function AboutTunnel() {
                 </div>
               ))}
             </div>
-          </TunnelCard>
+          </InfoCard>
         </Reveal>
       </div>
     </section>

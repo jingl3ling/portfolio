@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
 import CircularTitle from "@/components/v4/CircularTitle";
-import Tunnel from "@/components/v4/Tunnel";
 import AboutTunnel from "@/components/v4/AboutTunnel";
 import Experiments from "@/components/sections/Experiments";
 import ContactAether from "@/components/v4/ContactAether";
@@ -18,6 +17,9 @@ const SpaceField = dynamic(() => import("@/components/v4/SpaceField"), {
   ssr: false,
 });
 const GalaxyBackground = dynamic(() => import("@/components/v4/GalaxyBackground"), {
+  ssr: false,
+});
+const VantaClouds = dynamic(() => import("@/components/v4/VantaClouds"), {
   ssr: false,
 });
 
@@ -85,9 +87,10 @@ export default function V4() {
         />
       </motion.div>
 
-      {/* shared time-tunnel: full-bleed behind STATEMENT, then clipped to the
-          About cards' windows — one canvas, one particle system, two looks */}
-      <Tunnel />
+      {/* drifting cloud background behind the STATEMENT section — fades in
+          as you scroll to it, covered by the About section's own dark bg
+          from there on (archived the old line-tunnel: components/archive/Tunnel.tsx) */}
+      <VantaClouds />
 
       {/* ---------- HERO: rotating cylinder title ---------- */}
       <section
@@ -103,7 +106,7 @@ export default function V4() {
         </div>
       </section>
 
-      {/* ---------- STATEMENT + see-through windows (tunnel shows through) ---------- */}
+      {/* ---------- STATEMENT ---------- */}
       <section id="statement" className="relative flex min-h-[100svh] items-center py-24">
         <div className="wrap relative z-10">
           <Reveal>
@@ -123,13 +126,10 @@ export default function V4() {
               </Reveal>
             ))}
           </div>
-          <p className="mono-label mt-8">
-            ↑ the boxes are windows — the tunnel flies through them
-          </p>
         </div>
       </section>
 
-      {/* ---------- dark content; the tunnel only lives inside the About cards ---------- */}
+      {/* ---------- dark content ---------- */}
       <div className="relative bg-[#06070b]">
         <AboutTunnel />
         <section id="work">
