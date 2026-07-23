@@ -122,6 +122,27 @@ export const projects: Project[] = [
     links: [{ label: "Live on njit.edu", href: "https://www.njit.edu/academics/degrees" }],
     featured: true,
   },
+  {
+    slug: "pixel-portal",
+    title: "Pixel Portal",
+    track: "technical",
+    year: "2026",
+    role: "Solo — creative coding",
+    tagline:
+      "A generative pixel-art stage visualizer inspired by Rezz's live shows — a spiraling portal, rim lights, and spotlights, computed pixel by pixel in Canvas 2D.",
+    tags: ["Creative Coding", "Canvas", "Generative Art", "Next.js"],
+    media_type: "embeded",
+    embed: "https://rezz-inspired-portal.vercel.app/",
+    overview:
+      "A tiny-canvas pixel-art rendering technique — every frame is generated pixel by pixel rather than drawn with images — used to build a hypnotic stage portal in the style of Rezz's concert visuals: a single spiraling line, a rim of lights, and flanking spotlight rows, all procedural. Spun out of a portfolio experiment into its own app, with a soundtrack and multiple selectable visuals per track next on the roadmap.",
+    highlights: [
+      "Built a tiny-canvas, pixel-by-pixel rendering technique in Canvas 2D — no images or textures, every pixel computed from a procedural function each frame.",
+      "Designed the portal as a single continuous spiral, ring lights, and side spotlights, tuned frame-by-frame against real concert reference photos.",
+      "Spun the project out into its own repo and deployment, with audio-reactive visuals and multiple selectable scenes per track planned next.",
+    ],
+    stack: ["Next.js", "TypeScript", "Canvas 2D", "Vercel"],
+    links: [{ label: "Live site", href: "https://rezz-inspired-portal.vercel.app/" }],
+  },
 
   // ---------------- VENTURES ----------------
   {
