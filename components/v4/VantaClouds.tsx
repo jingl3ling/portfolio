@@ -51,22 +51,30 @@ export default function VantaClouds() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let effect: VantaEffect | null = null;
-    let starting = false;
+    let pending = false; // an import()+CLOUDS2() call is in flight
+    let wantActive = false; // the phase we're trying to reach right now
     let destroyed = false;
     let texture: string | null = null;
 
     // CLOUDS2 raymarches every pixel every frame (100 steps) — that's the
-    // main cost, and it was compounding two ways: starting immediately on
-    // page load regardless of scroll position, and rendering at the full
-    // device pixel ratio (2-3x on Retina, i.e. 4-9x the pixels). Fixed by
-    // only starting it once it's actually needed, and by capping `scale`
-    // (Vanta divides devicePixelRatio by this) so it renders at 1x.
+    // main cost, and it was compounding several ways: starting immediately
+    // on page load regardless of scroll position, rendering at the full
+    // device pixel ratio (2-3x on Retina, i.e. 4-9x the pixels), and — the
+    // one that caused lag to build up over a session — a race where scrolling
+    // fast enough to leave the "on" phase before the (real, network-latency)
+    // import resolved left `wantActive` false but the .then() callback used
+    // to create the effect anyway, since it never re-checked. That zombie
+    // instance runs its own internal rAF loop forever, permanently
+    // raymarching in the background with nothing left to ever stop it.
+    // `wantActive` is re-checked right before the effect is created so a
+    // superseded start() becomes a no-op instead of a leak.
     const start = () => {
-      if (effect || starting) return;
-      starting = true;
+      wantActive = true;
+      if (effect || pending) return;
+      pending = true;
       import("vanta/dist/vanta.clouds2.min").then((mod) => {
-        starting = false;
-        if (destroyed) return;
+        pending = false;
+        if (destroyed || !wantActive) return;
         const CLOUDS2 = ((mod as { default?: unknown }).default ?? mod) as (
           opts: Record<string, unknown>
         ) => VantaEffect;
@@ -93,6 +101,7 @@ export default function VantaClouds() {
       });
     };
     const stop = () => {
+      wantActive = false;
       effect?.destroy();
       effect = null;
     };
@@ -176,7 +185,10 @@ export default function VantaClouds() {
       if (phase === "before" || phase === "past") {
         wrap.style.opacity = "0";
         waveCtx.clearRect(0, 0, ww, wh);
-        if (phase === "past") stop(); // fully done with it for the rest of the scroll
+        // not just "past": scrolling back up from "full" lands on "before"
+        // directly (never passing through "past"), and that path used to
+        // leave the effect running — invisible, but still rendering
+        stop();
         raf = 0;
         return;
       }
