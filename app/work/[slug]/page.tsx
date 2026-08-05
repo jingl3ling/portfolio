@@ -53,7 +53,7 @@ export default async function WorkPage({
         <span className="mono-label">3D content coming soon</span>
       </div>
     );
-  } else if (project.media_type === "embeded") {
+  } if (project.media_type === "embeded") {
     projectMedia = (
       <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line">
         <iframe
@@ -65,7 +65,11 @@ export default async function WorkPage({
         ></iframe>
       </div>
     );
-  } else {
+  } 
+  else if (project.media_type === "none") {
+    projectMedia = null;
+  }
+  else {
     projectMedia = (
       <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line bg-[color-mix(in_srgb,var(--accent)_8%,#0a0a12)]">
         <span className="mono-label">Media coming soon</span>

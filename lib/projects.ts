@@ -14,7 +14,7 @@ export interface Project {
   tagline: string; // one line for the index
   tags: string[];
   thumbnail?: string; // /public path to a thumbnail; falls back to a placeholder
-  media_type?: "image" | "video" | "3d" | "embeded"; // for the media placeholder; defaults to image
+  media_type?: "image" | "video" | "3d" | "embeded" | "none"; // for the media placeholder; defaults to image
   image?: string; // /public path to a image; falls back to a placeholder
   video?: string; // /public path to a video; falls back to a placeholder
   embed?: string; // /public path to an embedded content; falls back to a placeholder
@@ -131,6 +131,7 @@ export const projects: Project[] = [
     tagline:
       "A generative pixel-art stage visualizer inspired by Rezz's live shows — a spiraling portal, rim lights, and spotlights, computed pixel by pixel in Canvas 2D.",
     tags: ["Creative Coding", "Canvas", "Generative Art", "Next.js"],
+    thumbnail: "/img/portal_thumbnail.png",
     media_type: "embeded",
     embed: "https://rezz-inspired-portal.vercel.app/",
     overview:
@@ -177,7 +178,7 @@ export const projects: Project[] = [
     track: "venture",
     year: "2025",
     role: "NSF I-Corps — customer discovery lead",
-    thumbnail: "/img/dream2product_thumbnail.png",
+    thumbnail: "/img/nsf_ne_thumbnail.png",
     media_type: "embeded",
     embed: "https://glory-vote-50157517.figma.site/",
     award: "NSF I-Corps — customer discovery grant",
@@ -202,6 +203,8 @@ export const projects: Project[] = [
     tagline:
       "Customer discovery through the Northeast Regional I-Corps for a platform that helps students find teammates for courses, hackathons, and personal projects.",
     tags: ["I-Corps", "Startup", "Product Discovery", "Ed-tech"],
+    thumbnail: "/img/nsf_ne_thumbnail.png",
+    media_type: "none",
     overview:
       "TeamUp is a platform for students to find project teammates — for a class, a hackathon, or a personal side project. Through the Northeast Regional I-Corps program, I ran structured customer discovery to validate the problem and shape the product direction before building.",
     highlights: [
@@ -220,6 +223,8 @@ export const projects: Project[] = [
     tagline:
       "Co-founded an ed-tech product: a push-dictionary and AI speaking chatbot, leading a 10-developer team.",
     tags: ["Ed-tech", "Product Management", "AI Chatbot", "Figma"],
+    thumbnail: "/img/otb_english_thumbnail.png",
+    media_type: "none",
     overview:
       "An ed-tech venture for Business English learners. I conceptualized and prototyped a high-fidelity push-dictionary in Figma, led a 10-developer team through weekly delivery, and spearheaded an AI speaking chatbot that lets students practice with lecture content.",
     highlights: [
