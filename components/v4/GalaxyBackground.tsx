@@ -1,6 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
+import "@/lib/three-console";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useInView } from "@/components/v4/useInView";

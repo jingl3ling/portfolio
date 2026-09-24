@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
+import "@/lib/three-console";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
 
 const BlackholeModel = dynamic(() => import("@/components/workspace/BlackholeModel"), {

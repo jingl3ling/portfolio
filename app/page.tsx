@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
 import CircularTitle from "@/components/v4/CircularTitle";
 import AboutTunnel from "@/components/v4/AboutTunnel";
-import Experiments from "@/components/sections/Experiments";
+// import Experiments from "@/components/sections/Experiments";
 import ContactAether from "@/components/v4/ContactAether";
 import WorkIndex from "@/components/WorkIndex";
 import Reveal from "@/components/Reveal";
@@ -147,7 +147,8 @@ export default function V4() {
             <WorkIndex basePath="/work" />
           </div>
         </section>
-        <Experiments />
+        {/* hidden for now */}
+        {/* <Experiments /> */}
         <ContactAether />
       </div>
     </>

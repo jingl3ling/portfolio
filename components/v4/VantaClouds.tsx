@@ -5,10 +5,43 @@ import { useEffect, useRef } from "react";
 // newer (needed by @react-three/fiber elsewhere) and not compatible, so this
 // pulls in a second, isolated copy pinned to the version Vanta expects
 // instead of risking breaking every other three.js background on the site.
-import * as THREE from "three-r134";
+// Loaded lazily (see loadThree134) rather than as a static import.
+type Three134 = typeof import("three-r134");
+let three134: Promise<Three134> | null = null;
+
+// every three.js build flags itself on `window.__THREE__` and warns
+// "Multiple instances of Three.js being imported" if one is already there —
+// that's expected here, so hide the flag while r134 evaluates and restore it
+function loadThree134(): Promise<Three134> {
+  three134 ??= (() => {
+    const w = window as { __THREE__?: string };
+    const prev = w.__THREE__;
+    delete w.__THREE__;
+    return import("three-r134").finally(() => {
+      // r134 sets the flag itself if it was clear — drop that too, or the
+      // app's own three would warn instead if it happens to load later
+      if (prev === undefined) delete w.__THREE__;
+      else w.__THREE__ = prev;
+    });
+  })();
+  return three134;
+}
 
 interface VantaEffect {
   destroy: () => void;
+}
+type Clouds2 = (opts: Record<string, unknown>) => VantaEffect;
+
+// cached like three134 — start() runs on every scroll back into range, and
+// re-calling import() each time trips Turbopack's "Unexpected import ... which
+// was deleted by an HMR update" warning in dev once this file has been
+// hot-reloaded; a settled promise never touches the module loader again
+let clouds2: Promise<Clouds2> | null = null;
+function loadClouds2(): Promise<Clouds2> {
+  clouds2 ??= import("vanta/dist/vanta.clouds2.min").then(
+    (mod) => ((mod as { default?: unknown }).default ?? mod) as Clouds2
+  );
+  return clouds2;
 }
 
 // same dark tone as the About section's own background, so the wave that
@@ -72,12 +105,9 @@ export default function VantaClouds() {
       wantActive = true;
       if (effect || pending) return;
       pending = true;
-      import("vanta/dist/vanta.clouds2.min").then((mod) => {
+      Promise.all([loadThree134(), loadClouds2()]).then(([THREE, CLOUDS2]) => {
         pending = false;
         if (destroyed || !wantActive) return;
-        const CLOUDS2 = ((mod as { default?: unknown }).default ?? mod) as (
-          opts: Record<string, unknown>
-        ) => VantaEffect;
         texture ??= noiseTextureDataURL();
         effect = CLOUDS2({
           el: host,

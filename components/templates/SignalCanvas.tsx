@@ -1,6 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import "@/lib/three-console";
 import { MeshDistortMaterial, Float, Environment, Lightformer } from "@react-three/drei";
 import { useRef } from "react";
 import * as THREE from "three";

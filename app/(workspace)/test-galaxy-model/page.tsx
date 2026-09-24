@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
+import "@/lib/three-console";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
 
 // pulls in three.js + the model loader — keep it out of the initial bundle,
