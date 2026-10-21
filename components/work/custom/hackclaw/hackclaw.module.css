@@ -1,0 +1,156 @@
+/* Hackclaw — a Las Vegas residency: a cream neon script over the dark Strip,
+   Deborah's magenta, Bellagio gold, and the cast billed on a bulb-lit marquee. */
+.page {
+  --hc-night: #0b0710;
+  --hc-night-2: #160f1d;
+  --hc-rule: #3a2a3c;
+  --hc-cream: #fff1d2;
+  --hc-dust: #b9a9b4;
+  --hc-magenta: #ff5fa8;
+  --hc-gold: #e8b65c;
+
+  --hc-script: var(--font-kaushan), "Brush Script MT", cursive;
+  --hc-serif: var(--font-bodoni), "Didot", "Bodoni 72", Georgia, serif;
+  --hc-sans: var(--font-instrument), "Helvetica Neue", Arial, sans-serif;
+  --hc-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  background:
+    radial-gradient(70% 45% at 75% 0%, rgba(232, 182, 92, 0.16), transparent 70%),
+    radial-gradient(50% 40% at 10% 30%, rgba(255, 95, 168, 0.1), transparent 70%),
+    var(--hc-night);
+  color: var(--hc-cream);
+  font: 400 1.0625rem/1.65 var(--hc-sans);
+  min-height: 100vh;
+}
+.page :focus-visible { outline: 2px solid var(--hc-magenta); outline-offset: 3px; }
+.page ::selection { background: var(--hc-magenta); color: #fff; }
+.page p { margin: 0; max-width: 62ch; }
+.page em { font-family: var(--hc-serif); font-style: italic; color: var(--hc-gold); }
+
+.col {
+  max-width: 64rem; margin-inline: auto;
+  padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+}
+
+/* ---- header: neon title beside the poster ---- */
+.header {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 3rem;
+  align-items: center; padding-top: 8rem; padding-bottom: 2rem;
+}
+.headText { min-width: 0; }
+.eyebrow, .kicker {
+  font: 600 0.75rem/1.4 var(--hc-sans); letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--hc-gold);
+}
+.kicker { display: block; }
+.title {
+  font: 400 clamp(4rem, 12vw, 7.5rem)/1 var(--hc-script);
+  margin: 0.5rem 0 1.25rem; color: var(--hc-cream);
+  text-shadow:
+    0 0 6px rgba(255, 241, 210, 0.7),
+    0 0 22px rgba(255, 220, 160, 0.45),
+    0 0 60px rgba(232, 182, 92, 0.35);
+}
+.title span {
+  color: #ffd1e6;
+  text-shadow:
+    0 0 6px rgba(255, 95, 168, 0.8),
+    0 0 24px rgba(255, 95, 168, 0.5),
+    0 0 60px rgba(255, 95, 168, 0.35);
+}
+.lede { font-size: 1.25rem; line-height: 1.55; color: var(--hc-cream); text-wrap: pretty; }
+
+.poster { margin: 0; justify-self: end; width: 100%; max-width: 22rem; }
+.poster img {
+  display: block; width: 100%; height: auto; border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(232, 182, 92, 0.35), 0 30px 80px -20px rgba(232, 182, 92, 0.35);
+  transform: rotate(1.5deg);
+}
+@media (max-width: 760px) {
+  .header { grid-template-columns: 1fr; padding-top: 6.5rem; gap: 2rem; }
+  .poster { justify-self: center; max-width: 17rem; }
+}
+
+/* ---- body ---- */
+.main { display: grid; gap: 4.5rem; padding-top: 3rem; padding-bottom: 6rem; }
+.section { display: grid; gap: 1.4rem; min-width: 0; }
+.h2 {
+  font: 500 italic clamp(1.9rem, 4.5vw, 2.6rem)/1.1 var(--hc-serif); margin: 0;
+  color: var(--hc-cream); text-wrap: balance;
+}
+.h3 { font: 600 1.05rem/1.3 var(--hc-sans); margin: 0; color: var(--hc-cream); }
+
+/* marquee: a frame of bulbs that chase around the lineup */
+.marquee {
+  position: relative; padding: 1.9rem; border-radius: 14px;
+  background: linear-gradient(180deg, #2a1323, #160b14);
+  box-shadow: 0 0 0 2px var(--hc-gold), 0 0 40px -6px rgba(232, 182, 92, 0.45);
+}
+.marquee::before {
+  content: ""; position: absolute; inset: 3px; border-radius: 12px; pointer-events: none;
+  background:
+    radial-gradient(circle, #fff6dc 0 2.5px, rgba(255, 220, 150, 0.5) 3.5px, transparent 5px) 0 0 / 22px 22px;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  padding: 11px;
+  animation: hcChase 1.2s steps(2) infinite;
+}
+@keyframes hcChase { to { background-position: 11px 0; } }
+
+.lineup {
+  position: relative; list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem;
+}
+.act {
+  background: var(--hc-night); border-radius: 8px; padding: 1.4rem 1.4rem 1.25rem;
+  display: grid; gap: 0.55rem; align-content: start; text-align: center; justify-items: center;
+}
+.headliner { grid-column: 1 / -1; padding-block: 1.75rem 1.5rem; }
+.billing {
+  font: 600 0.7rem/1 var(--hc-sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--hc-gold);
+}
+.actName {
+  margin: 0; font: 400 2.6rem/1.05 var(--hc-script); color: var(--hc-cream);
+  text-shadow: 0 0 10px rgba(255, 220, 160, 0.45);
+}
+.headliner .actName {
+  font-size: clamp(3.2rem, 8vw, 4.2rem); color: #ffd1e6;
+  text-shadow: 0 0 8px rgba(255, 95, 168, 0.7), 0 0 30px rgba(255, 95, 168, 0.4);
+}
+.namesake { font: 400 italic 1.05rem/1.4 var(--hc-serif); color: var(--hc-dust); }
+.job { font-size: 0.98rem; line-height: 1.55; max-width: 44ch !important; }
+.model {
+  margin-top: 0.3rem; font: 400 0.72rem/1 var(--hc-mono); color: var(--hc-dust);
+  border: 1px solid var(--hc-rule); border-radius: 999px; padding: 0.4rem 0.7rem;
+}
+@media (max-width: 640px) {
+  .marquee { padding: 1.6rem; }
+  .lineup { grid-template-columns: 1fr; }
+}
+
+/* screenshot */
+.shot { margin: 0; display: grid; gap: 0.9rem; }
+.shot img {
+  display: block; width: 100%; height: auto; border-radius: 10px;
+  border: 1px solid var(--hc-rule); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+}
+.shot figcaption { font-size: 0.95rem; color: var(--hc-dust); max-width: 62ch; }
+.shot b { color: var(--hc-cream); font-weight: 600; }
+
+/* how */
+.how { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2rem; }
+.howItem { display: grid; gap: 0.45rem; align-content: start; padding-top: 0.9rem; border-top: 1px solid var(--hc-magenta); }
+.howItem p { font-size: 0.98rem; color: var(--hc-dust); }
+@media (max-width: 760px) { .how { grid-template-columns: 1fr; } }
+
+/* stack + footer */
+.stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.stack span {
+  font: 400 0.8rem/1 var(--hc-mono); color: var(--hc-dust);
+  border: 1px solid var(--hc-rule); border-radius: 999px; padding: 0.45rem 0.75rem;
+}
+.footer { padding-bottom: 3rem; font: 400 0.8125rem/1.5 var(--hc-mono); color: var(--hc-dust); }

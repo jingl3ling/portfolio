@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { projects, getProject } from "@/lib/projects";
 import Reveal from "@/components/Reveal";
 import WorkBackdrop from "@/components/v4/WorkBackdrop";
 import { customPages } from "@/components/work/custom";
+import BackToWork from "@/components/work/BackToWork";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -34,7 +34,13 @@ export default async function WorkPage({
   if (!project) notFound();
 
   const CustomPage = customPages[project.slug];
-  if (CustomPage) return <CustomPage project={project} />;
+  if (CustomPage)
+    return (
+      <>
+        <BackToWork />
+        <CustomPage project={project} />
+      </>
+    );
 
   const trackLabel = project.track === "technical" ? "Technical" : "Venture";
   var projectMedia;
@@ -84,18 +90,10 @@ export default async function WorkPage({
   return (
     <main className="wrap pt-32 pb-32 md:pt-40">
       <WorkBackdrop />
-      <Reveal>
-        <Link
-          href="/#work"
-          data-cursor
-          className="mono-label transition-colors hover:text-accent"
-        >
-          ← Back to work
-        </Link>
-      </Reveal>
+      <BackToWork />
 
       <Reveal delay={0.05}>
-        <div className="mono-label mt-10 flex flex-wrap gap-x-4 gap-y-1">
+        <div className="mono-label flex flex-wrap gap-x-4 gap-y-1">
           <span>{trackLabel}</span>
           <span>· {project.year}</span>
           {project.role && <span>· {project.role}</span>}

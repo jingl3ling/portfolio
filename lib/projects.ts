@@ -53,24 +53,24 @@ export const projects: Project[] = [
   },
   {
     slug: "openclaw-agent-team",
-    title: "OpenClaw Agent Team",
+    title: "Hackclaw",
     track: "technical",
     year: "2026",
     role: "Solo — architecture & orchestration",
     tagline:
-      "A self-hosted multi-agent dev team in Discord — Claude orchestrates two local Ollama agents that write, review, and ship code straight to GitHub.",
-    tags: ["Multi-agent", "Discord", "Claude API", "Ollama"],
+      "An agent team I built with OpenClaw, cast from the characters of Hacks: Deborah orchestrates while Ava writes code and Marcus checks it, all in Discord.",
+    tags: ["Multi-agent", "OpenClaw", "Discord", "Claude API", "Ollama"],
     thumbnail: "/img/hacks_thumbnail.JPG",
     media_type: "image",
-    image: "/img/hacks.jpg",
+    image: "/img/hacks.png",
     overview:
-      "A three-agent development team living in Discord: Deborah orchestrates as the boss, Ava writes code, and Marcus does QA. Deborah runs on an Anthropic Claude model while Ava and Marcus run on a smaller model served locally by Ollama on a Mac mini. A fine-grained GitHub personal access token lets the team read the repo, make changes, and push commits automatically.",
+      "An agent team I built with OpenClaw, cast from the characters of Hacks and living in a Discord server. Deborah is the orchestrator: she runs on Anthropic's Claude, plans each change, and briefs the others. Ava writes the code and Marcus does QA, both on a smaller model served by Ollama on a Mac mini. A fine-grained GitHub token lets the team read the repo and push commits on their own.",
     highlights: [
-      "Architected a 3-agent team — Deborah (orchestrator), Ava (writer), and Marcus (QA) — collaborating over Discord to plan, write, and review code.",
-      "Ran the orchestrator on Anthropic's Claude API while the writer and QA agents ran on a smaller model self-hosted with Ollama on a Mac mini.",
-      "Configured a fine-grained GitHub personal access token so the team can read/write the repo and push commits automatically, unattended.",
+      "Built a three-agent team with OpenClaw, each agent named after a character from Hacks: Deborah (orchestrator), Ava (writer), and Marcus (QA).",
+      "Ran Deborah on Anthropic's Claude while Ava and Marcus ran a smaller model self-hosted with Ollama on a Mac mini.",
+      "Gave the team a fine-grained GitHub token so it can read the repo, push branches, and report back the commit in Discord.",
     ],
-    stack: ["Discord API", "Claude API", "Ollama", "Mac mini", "GitHub API"],
+    stack: ["OpenClaw", "Discord API", "Claude API", "Ollama", "Mac mini", "GitHub API"],
     featured: true,
   },
   {

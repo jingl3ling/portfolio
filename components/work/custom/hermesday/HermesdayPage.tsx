@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { Newsreader, UnifrakturMaguntia } from "next/font/google";
 import type { Project } from "@/lib/projects";
@@ -92,20 +91,7 @@ export default function HermesdayPage({ project }: { project: Project }) {
       <ScrollTopOnMount />
       <ImmersiveTheme accent="#8f86ff" bg="#0b0a1f" />
 
-      <figure className={s.hero}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- matches the other case studies */}
-        <img
-          src={project.image}
-          width={1080}
-          height={540}
-          alt="Duotone still in ultramarine: Eugene in glasses on the left, Wednesday with braids at center, Enid smiling on the right, and Thing the disembodied hand resting on Wednesday's shoulder."
-        />
-      </figure>
-
       <header className={`${s.col} ${s.header}`}>
-        <Link href="/#work" data-cursor className={s.back}>
-          ← Back to work
-        </Link>
         <div className={s.eyebrow}>
           Technical project · {project.year} · <span className={s.live}>In progress</span>
         </div>
@@ -116,6 +102,16 @@ export default function HermesdayPage({ project }: { project: Project }) {
           An agent team I built in <em>Hermes</em>, cast from the characters of <em>Wednesday</em>.
           Wednesday runs the show as the orchestrator, while Thing, Enid, and Eugene do the work.
         </p>
+        <figure className={s.hero}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- matches the other case studies */}
+          <img
+            src={project.image}
+            width={1080}
+            height={540}
+            alt="Duotone still in ultramarine: Eugene in glasses on the left, Wednesday with braids at center, Enid smiling on the right, and Thing the disembodied hand resting on Wednesday's shoulder."
+          />
+          <figcaption>Pictured: Eugene, Wednesday, Enid, and Thing.</figcaption>
+        </figure>
       </header>
 
       <main className={`${s.col} ${s.main}`}>
