@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
+import ScrollTopOnMount from "@/components/work/ScrollTopOnMount";
 
 const SpaceField = dynamic(() => import("@/components/v4/SpaceField"), {
   ssr: false,
@@ -13,20 +13,9 @@ const SpaceField = dynamic(() => import("@/components/v4/SpaceField"), {
  * work pages match the /v4 home page's space theme.
  */
 export default function WorkBackdrop() {
-  // always open a case study at the top — Lenis persists across client
-  // navigations and keeps its previous scroll target, so force it there
-  useEffect(() => {
-    const lenis = (window as unknown as { lenis?: { scrollTo: (t: number, o?: object) => void } }).lenis;
-    const toTop = () => {
-      if (lenis) lenis.scrollTo(0, { immediate: true });
-      else window.scrollTo(0, 0);
-    };
-    toTop();
-    requestAnimationFrame(toTop);
-  }, []);
-
   return (
     <>
+      <ScrollTopOnMount />
       <ImmersiveTheme accent="#8ec5ff" bg="#05060a" />
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
         <SpaceField warp={false} />

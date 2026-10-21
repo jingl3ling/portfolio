@@ -30,6 +30,28 @@ export interface Project {
 export const projects: Project[] = [
   // ---------------- TECHNICAL ----------------
   {
+    slug: "hermesday",
+    title: "Hermesday",
+    track: "technical",
+    year: "2026",
+    role: "Solo — architecture & orchestration",
+    tagline:
+      "An agent team I built in Hermes, cast from the characters of Wednesday: Wednesday orchestrates while Thing, Enid, and Eugene do the work.",
+    tags: ["Multi-agent", "Hermes", "Local LLM", "In progress"],
+    thumbnail: "/img/hermesday.webp",
+    media_type: "image",
+    image: "/img/hermesday.webp",
+    overview:
+      "An agent team I built in Hermes, cast from the characters of Wednesday. Wednesday is the orchestrator: she reads the codebase, decides the design, briefs each worker, and re-checks their work before merging it. Thing, Enid, and Eugene are the workers, running Qwen locally on a Mac Studio, each in its own git worktree. Their first assignments are features for a Drupal module that turns NJIT news articles into audio.",
+    highlights: [
+      "Built an orchestrator–worker agent team in Hermes, with each agent named after a character from Wednesday.",
+      "Wednesday plans, briefs, and verifies; Thing, Enid, and Eugene each own one workstream at a time.",
+      "Workers run Qwen locally on a Mac Studio in separate git worktrees, so their changes never collide and content stays on our network.",
+    ],
+    stack: ["Hermes", "Qwen (MLX)", "Mac Studio", "Git worktrees", "Drupal / PHP"],
+    featured: true,
+  },
+  {
     slug: "openclaw-agent-team",
     title: "OpenClaw Agent Team",
     track: "technical",

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { projects, getProject } from "@/lib/projects";
 import Reveal from "@/components/Reveal";
 import WorkBackdrop from "@/components/v4/WorkBackdrop";
+import { customPages } from "@/components/work/custom";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -32,6 +33,9 @@ export default async function WorkPage({
   const project = getProject(slug);
   if (!project) notFound();
 
+  const CustomPage = customPages[project.slug];
+  if (CustomPage) return <CustomPage project={project} />;
+
   const trackLabel = project.track === "technical" ? "Technical" : "Venture";
   var projectMedia;
   if (project.media_type === "image") {
@@ -53,7 +57,7 @@ export default async function WorkPage({
         <span className="mono-label">3D content coming soon</span>
       </div>
     );
-  } if (project.media_type === "embeded") {
+  } else if (project.media_type === "embeded") {
     projectMedia = (
       <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line">
         <iframe
