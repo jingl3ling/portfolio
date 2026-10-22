@@ -148,6 +148,17 @@ export default function VantaClouds() {
     // rebuilt each time. So the layer stays at opacity 0 until the texture
     // has loaded, plus a couple of frames for it to upload to the GPU.
     let readyFrames = 0;
+
+    // Opacity is eased toward its target instead of set directly. The effect
+    // is rebuilt on every scroll back into range and only becomes visible
+    // once its texture has loaded, so a direct set made the clouds snap from
+    // 0 to full a beat after the cards around them were already on screen.
+    let shown = 0;
+    const setOpacity = (target: number) => {
+      shown += (target - shown) * 0.14;
+      if (Math.abs(target - shown) < 0.004) shown = target;
+      wrap.style.opacity = String(shown);
+    };
     const isReady = () => {
       if (effect?.uniforms?.iTex?.value?.image) readyFrames++;
       else readyFrames = 0;
@@ -231,6 +242,7 @@ export default function VantaClouds() {
     const frame = () => {
       const phase = computePhase();
       if (phase === "before" || phase === "past") {
+        shown = 0;
         wrap.style.opacity = "0";
         waveCtx.clearRect(0, 0, ww, wh);
         // not just "past": scrolling back up from "full" lands on "before"
@@ -247,7 +259,7 @@ export default function VantaClouds() {
           const b = el.getBoundingClientRect();
           setRect(i, b.left, b.top, b.width, b.height);
         });
-        wrap.style.opacity = ready ? "1" : "0";
+        setOpacity(ready ? 1 : 0);
         waveCtx.clearRect(0, 0, ww, wh); // the clip-path windows take over from here
       } else {
         const w = window.innerWidth, h = window.innerHeight;
@@ -257,7 +269,7 @@ export default function VantaClouds() {
         const vh = window.innerHeight;
         const sTop = statementEl!.getBoundingClientRect().top;
         const fadeIn = Math.max(0, Math.min(1, (vh * 0.6 - sTop) / (vh * 0.4)));
-        wrap.style.opacity = ready ? String(fadeIn) : "0";
+        setOpacity(ready ? fadeIn : 0);
 
         // spring the wave's baseline toward where it should be — the
         // spring's own overshoot is the bounce, and since it's chasing a

@@ -26,6 +26,12 @@ const SKILLS = [
 // cards' lower rows of text sit — text-shadow alone doesn't hold up against
 // that much bright white, so a gradient scrim guarantees contrast underneath
 // regardless of how bright the clouds get.
+//
+// These cards deliberately aren't wrapped in <Reveal>: the clouds are a
+// separate fixed layer clipped to each card's *current* rect, so a card that
+// fades/slides in separately left a bare cloud-filled hole offset from where
+// the card then landed. The window is the reveal — the clouds fade in
+// together, in VantaClouds.
 function InfoCard({ children }: { children: ReactNode }) {
   return (
     <div className="cloud-window relative z-[6] h-full overflow-hidden rounded-2xl border border-line p-7 [text-shadow:0_1px_14px_rgba(0,0,0,0.9)]">
@@ -78,7 +84,7 @@ export default function AboutTunnel() {
 
       {/* education · experience · skills */}
       <div className="mt-24 grid gap-4 md:mt-32 md:grid-cols-3">
-        <Reveal className="h-full">
+        <div className="h-full">
           <InfoCard>
             <h3 className="font-display text-2xl">Education</h3>
             <div className="mt-2">
@@ -91,9 +97,9 @@ export default function AboutTunnel() {
               ))}
             </div>
           </InfoCard>
-        </Reveal>
+        </div>
 
-        <Reveal delay={0.06} className="h-full">
+        <div className="h-full">
           <InfoCard>
             <h3 className="font-display text-2xl">Experience</h3>
             <div className="mt-2">
@@ -106,9 +112,9 @@ export default function AboutTunnel() {
               ))}
             </div>
           </InfoCard>
-        </Reveal>
+        </div>
 
-        <Reveal delay={0.12} className="h-full">
+        <div className="h-full">
           <InfoCard>
             <h3 className="font-display text-2xl">Skills</h3>
             <div className="mt-2">
@@ -120,7 +126,7 @@ export default function AboutTunnel() {
               ))}
             </div>
           </InfoCard>
-        </Reveal>
+        </div>
       </div>
     </section>
   );
