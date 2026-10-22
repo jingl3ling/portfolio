@@ -29,6 +29,9 @@ function loadThree134(): Promise<Three134> {
 
 interface VantaEffect {
   destroy: () => void;
+  // CLOUDS2 keeps its noise texture here; `.image` stays undefined until
+  // the async TextureLoader has actually finished (see `isReady` below)
+  uniforms?: { iTex?: { value?: { image?: unknown } } };
 }
 type Clouds2 = (opts: Record<string, unknown>) => VantaEffect;
 
@@ -134,6 +137,21 @@ export default function VantaClouds() {
       wantActive = false;
       effect?.destroy();
       effect = null;
+      readyFrames = 0;
+    };
+
+    // Vanta kicks off the noise-texture load asynchronously and starts
+    // drawing immediately. Until the texture lands the shader samples zeros
+    // for its cloud density, which comes out as solid WHITE — invisible on
+    // Chrome (the data-URL decodes within a frame) but a visible white slab
+    // on Safari, and it recurred on every scroll re-entry since the effect is
+    // rebuilt each time. So the layer stays at opacity 0 until the texture
+    // has loaded, plus a couple of frames for it to upload to the GPU.
+    let readyFrames = 0;
+    const isReady = () => {
+      if (effect?.uniforms?.iTex?.value?.image) readyFrames++;
+      else readyFrames = 0;
+      return readyFrames > 2;
     };
 
     // clipped to the About cards' `.cloud-window` cutouts once you reach
@@ -223,12 +241,13 @@ export default function VantaClouds() {
         return;
       }
       start();
+      const ready = isReady();
       if (phase === "windows") {
         els.forEach((el, i) => {
           const b = el.getBoundingClientRect();
           setRect(i, b.left, b.top, b.width, b.height);
         });
-        wrap.style.opacity = "1";
+        wrap.style.opacity = ready ? "1" : "0";
         waveCtx.clearRect(0, 0, ww, wh); // the clip-path windows take over from here
       } else {
         const w = window.innerWidth, h = window.innerHeight;
@@ -238,7 +257,7 @@ export default function VantaClouds() {
         const vh = window.innerHeight;
         const sTop = statementEl!.getBoundingClientRect().top;
         const fadeIn = Math.max(0, Math.min(1, (vh * 0.6 - sTop) / (vh * 0.4)));
-        wrap.style.opacity = String(fadeIn);
+        wrap.style.opacity = ready ? String(fadeIn) : "0";
 
         // spring the wave's baseline toward where it should be — the
         // spring's own overshoot is the bounce, and since it's chasing a
