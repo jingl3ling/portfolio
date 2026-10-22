@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 /**
  * Overrides the global CSS tokens for the current route (dark, light text),
@@ -14,7 +14,10 @@ export default function ImmersiveTheme({
   accent?: string;
   bg?: string;
 }) {
-  useEffect(() => {
+  // layout effect, not useEffect: apply the dark tokens before the first paint
+  // rather than a frame later, shrinking the window where the page is the
+  // CSS-default white
+  useLayoutEffect(() => {
     const el = document.documentElement;
     const vars: Record<string, string> = {
       "--bg": bg,

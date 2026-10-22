@@ -71,6 +71,15 @@ export default function V4() {
     <>
       <ImmersiveTheme accent="#8ec5ff" bg="#05060a" />
 
+      {/* Opaque dark base, in the server-rendered markup. The page's dark
+          look otherwise comes only from ImmersiveTheme flipping `html`'s
+          --bg after hydration (the CSS default is white), and mobile browsers
+          rasterize in tiles — some keep the stale pre-hydration white root
+          paint while others repaint, which showed up as a white slab (hard
+          horizontal edges) behind "I build everywhere". A fixed layer paints
+          dark from the first frame, independent of that handoff. */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 bg-[#05060a]" />
+
       {/* HERO background: starfield (+ cool nebula), fades out on scroll */}
       <motion.div
         aria-hidden
