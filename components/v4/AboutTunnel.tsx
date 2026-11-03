@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import type { ReactNode } from "react";
 
@@ -57,12 +58,23 @@ export default function AboutTunnel() {
           its clip-path/opacity transition is exactly in sync during scroll */}
       <div className="relative z-10 grid items-start gap-12 md:grid-cols-[240px_1fr] md:gap-20">
         <Reveal>
-          <div
-            role="img"
-            aria-label="Jing Huang"
-            className="aspect-[4/5] border border-line bg-[color-mix(in_srgb,var(--accent)_10%,#0a0a12)] bg-cover bg-center"
-            style={{ backgroundImage: "url(/img/profile.png)" }}
-          />
+          {/* A real <Image>, not a CSS background: with `bg-cover` the
+              default `background-repeat` tiled the photo, and rounding in the
+              border-box math left a hairline at the top showing the repeated
+              copy's bottom edge (white) — read as a border. object-cover
+              can't tile. It also serves a right-sized file instead of the
+              1.5MB original for a ~150px box. Capped on mobile (one-column
+              grid, so it used to stretch full width); fills its 240px column
+              from md up. */}
+          <div className="relative aspect-[3/4] w-36 overflow-hidden border border-line bg-[color-mix(in_srgb,var(--accent)_10%,#0a0a12)] sm:w-44 md:w-full">
+            <Image
+              src="/img/new_profile.JPG"
+              alt="Jing Huang"
+              fill
+              sizes="(min-width: 768px) 240px, (min-width: 640px) 176px, 144px"
+              className="object-cover"
+            />
+          </div>
         </Reveal>
         <div>
           <Reveal>
