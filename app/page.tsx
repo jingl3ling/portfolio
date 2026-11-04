@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ImmersiveTheme from "@/components/ImmersiveTheme";
@@ -111,7 +112,16 @@ export default function V4() {
           <p className="max-w-md px-6 text-muted">
             Web developer · AI M.S. @ NJIT · Computer Engineering B.S.
           </p>
-          <span className="mono-label">scroll to warp ↓</span>
+          {/* entry point to the 3D project map (the container is
+              pointer-events-none so the hero stays draggable-through) */}
+          <Link
+            href="/explore"
+            data-cursor
+            className="pointer-events-auto mt-1 rounded-full border border-line bg-[#05060a]/40 px-6 py-2.5 text-sm backdrop-blur-sm transition-colors hover:border-ink"
+          >
+            Explore my work universe →
+          </Link>
+          <span className="mono-label mt-2">scroll to warp ↓</span>
         </div>
       </section>
 
