@@ -202,7 +202,7 @@ export const projects: Project[] = [
     tags: ["Startup", "AI", "Full-stack", "iOS"],
     thumbnail: "/img/althy_logo.png",
     media_type: "embeded",
-    embed: "https://www.althyplanner.com/",
+    embed: "https://althyapp.vercel.app/",
     overview:
       "Althy is an AI wellness planning app. As founder I directed a 4-person team across UI/UX, user research, and business development — translating a 50-student survey into a prioritized roadmap (syllabus parsing, wellness tracking, calendar sharing), engineering the alpha/beta, and shipping live web + iOS betas for active user testing.",
     highlights: [
