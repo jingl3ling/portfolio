@@ -52,6 +52,28 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    slug: "buzz",
+    title: "Buzz",
+    track: "technical",
+    year: "2026",
+    tagline:
+      "Bee + Jev, inspired by MIST from Netflix's Pantheon: a lamp that glows calm blue while you chat and turns orange, then red, as a conversation gets heated.",
+    tags: ["Wearable AI", "Bee", "Jev", "ESP32"],
+    thumbnail: "/img/MIST.webp",
+    media_type: "image",
+    image: "/img/MIST.webp",
+    overview:
+      "A conversation-intensity lamp inspired by MIST from Netflix's Pantheon. A Bee wearable, started and stopped from Apple Watch, transcribes the conversation; a Python bridge streams each utterance to a FastAPI server, where Jev judges how heated the wording is and speaking pace fills in the rest. An ESP32 LED matrix shows the result the way MIST shows her mood: calm blue, then orange and red, breathing faster the faster you talk.",
+    highlights: [
+      "Streamed Bee transcripts in near real time through a Python bridge that follows Start, Mute, and Stop from Apple Watch.",
+      "Used Jev to rate whether the wording is heated, combined with speaking pace into one intensity score that rises fast and calms down gently.",
+      "Drove an ESP32 + WS2812 matrix with server-sent color and breath targets, blended in OKLab so blue warms through off-white to orange and red.",
+      "Kept transcripts in server memory only, never written to disk.",
+    ],
+    stack: ["Bee", "Jev", "Python", "FastAPI", "ESP32 / Arduino", "WS2812 LEDs", "Apple Watch"],
+    featured: true,
+  },
+  {
     slug: "openclaw-agent-team",
     title: "Hackclaw",
     track: "technical",
