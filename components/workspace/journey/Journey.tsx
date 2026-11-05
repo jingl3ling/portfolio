@@ -19,7 +19,7 @@ export default function Journey() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [active, setActive] = useState(0);
-  const scrub = useRef<{ id: number; last: number } | null>(null); // a drag along the progress bar
+  const scrub = useRef<{ id: number; last: number; x: number; y: number; dragging: boolean } | null>(null); // a drag along the progress bar
 
   const { reduced, lowPower } = useMemo(
     () => ({
@@ -168,15 +168,23 @@ export default function Journey() {
           the bar and drag along it to scrub through the whole journey. */}
       <nav
         aria-label="Journey progress"
+        // A press only becomes a drag once the pointer has moved a few pixels.
+        // Capturing the pointer on press (as this used to) retargets the click
+        // to the bar itself, so no dot ever received it.
         onPointerDown={(e) => {
-          scrub.current = { id: e.pointerId, last: -1 };
-          e.currentTarget.setPointerCapture(e.pointerId);
+          scrub.current = { id: e.pointerId, last: -1, x: e.clientX, y: e.clientY, dragging: false };
         }}
         onPointerMove={(e) => {
-          if (scrub.current?.id !== e.pointerId) return;
+          const d = scrub.current;
+          if (!d || d.id !== e.pointerId) return;
+          if (!d.dragging) {
+            if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) return;
+            d.dragging = true;
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }
           const i = stationUnder(e.currentTarget, e.clientX, e.clientY);
-          if (i !== scrub.current.last) {
-            scrub.current.last = i;
+          if (i !== d.last) {
+            d.last = i;
             goTo(i, 0.9);
           }
         }}
