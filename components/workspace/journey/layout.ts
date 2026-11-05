@@ -104,8 +104,10 @@ export function buildJourney(aspect: number, narrow: boolean): Journey {
   planets.forEach((p, i) => {
     const radial = new THREE.Vector3(p.pos.x, 0, p.pos.z).normalize();
     const d = p.radius * 4.9 * far;
-    // between the sun and the planet, looking outward: the sun is behind the
-    // camera, so the planet is fully lit
+    // The camera stands off to one side of the sun-planet line (a ~50° phase
+    // angle), so you see the planet part lit, part in shadow: the bright side
+    // faces the sun and the terminator runs across the disc. Standing exactly
+    // between them would show only a fully lit, flat-looking face.
     let camPos: THREE.Vector3;
     if (narrow) {
       // Standing far enough back for a portrait screen can be further than the
@@ -119,7 +121,13 @@ export function buildJourney(aspect: number, narrow: boolean): Journey {
       const tangent = new THREE.Vector3(-radial.z, 0, radial.x);
       camPos = p.pos.clone().addScaledVector(radial, -h).addScaledVector(tangent, -side).add(new THREE.Vector3(0, alt, 0));
     } else {
-      camPos = p.pos.clone().addScaledVector(radial, -d).add(new THREE.Vector3(0, d * 0.3, 0));
+      const tangent = new THREE.Vector3(-radial.z, 0, radial.x);
+      const phase = 0.85; // radians (~49°) from the sun's direction: mostly lit, a shadowed edge; trailing behind along the route
+      camPos = p.pos
+        .clone()
+        .addScaledVector(radial, -d * Math.cos(phase))
+        .addScaledVector(tangent, -d * Math.sin(phase))
+        .add(new THREE.Vector3(0, d * 0.3, 0));
     }
     const panel: Side = i % 2 === 0 ? "right" : "left";
     const target = frame(camPos, p.pos, panel);

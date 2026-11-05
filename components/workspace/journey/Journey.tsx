@@ -19,6 +19,7 @@ export default function Journey() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [active, setActive] = useState(0);
+  const scrub = useRef<{ id: number; last: number } | null>(null); // a drag along the progress bar
 
   const { reduced, lowPower } = useMemo(
     () => ({
@@ -62,10 +63,10 @@ export default function Journey() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [journey, sectionHeight]);
 
-  const goTo = (i: number) => {
+  const goTo = (i: number, duration = 1.8) => {
     const y = i * sectionHeight();
     const lenis = (window as unknown as { lenis?: { scrollTo: (y: number, o?: object) => void } }).lenis;
-    if (lenis) lenis.scrollTo(y, { duration: 1.8 });
+    if (lenis) lenis.scrollTo(y, { duration });
     else window.scrollTo({ top: y, behavior: "smooth" });
   };
 
@@ -87,30 +88,47 @@ export default function Journey() {
   // Lenis keeps its previous scroll target across client navigations, and
   // the browser's own hash jump can't see sections that mount late, so the
   // jump is done explicitly.
+  //
+  // This must run ONCE, on mount. It used to depend on the journey, which is
+  // rebuilt whenever the viewport's shape changes — and on iOS Safari the URL
+  // bar collapsing as you scroll does exactly that, so every scroll re-ran the
+  // jump and yanked you back to the planet you had come from. The hash is also
+  // cleared once it has been used, so nothing can replay it later.
+  const landed = useRef(false);
   useEffect(() => {
+    if (landed.current) return;
+    landed.current = true;
     const lenis = (window as unknown as { lenis?: { scrollTo: (y: number, o?: object) => void; resize?: () => void } })
       .lenis;
+    const hash = window.location.hash;
     const jump = () => {
       // arriving from a shorter page (a case study), Lenis still holds that
       // page's scroll limit and would clamp the jump short — re-measure first
       lenis?.resize?.();
-      const i = Math.max(0, stationForHash(window.location.hash));
-      const y = i * sectionHeight();
+      const y = Math.max(0, stationForHash(hash)) * sectionHeight();
       if (lenis) lenis.scrollTo(y, { immediate: true });
       else window.scrollTo(0, y);
     };
     jump();
-    requestAnimationFrame(jump);
-    // nav links (#about, #work, #contact) and pasted hashes after landing
+    requestAnimationFrame(() => {
+      jump();
+      if (hash) // keep Next's own history state: replacing it with null makes the router rewrite the URL
+      if (hash) history.replaceState(history.state, "", window.location.pathname + window.location.search);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // nav links (#about, #work, #contact) and pasted hashes after landing
+  useEffect(() => {
     const onHash = () => {
       const i = stationForHash(window.location.hash);
       if (i >= 0) goTo(i);
     };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
-    // goTo only reads refs/stable values; re-running on every render would re-jump
+    // goTo only reads refs and stable values
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stationForHash, sectionHeight]);
+  }, [stationForHash]);
 
   const label = (s: Station) =>
     s.kind === "intro"
@@ -146,19 +164,46 @@ export default function Journey() {
         style={{ background: "radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(3,4,10,0.6) 100%)" }}
       />
 
-      {/* progress: one dot per station, click to jump */}
-      <nav aria-label="Journey progress" className="fixed right-3 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-3 sm:flex">
+      {/* progress: one dot per station. Click one to jump there, or press on
+          the bar and drag along it to scrub through the whole journey. */}
+      <nav
+        aria-label="Journey progress"
+        onPointerDown={(e) => {
+          scrub.current = { id: e.pointerId, last: -1 };
+          e.currentTarget.setPointerCapture(e.pointerId);
+        }}
+        onPointerMove={(e) => {
+          if (scrub.current?.id !== e.pointerId) return;
+          const i = stationUnder(e.currentTarget, e.clientX, e.clientY);
+          if (i !== scrub.current.last) {
+            scrub.current.last = i;
+            goTo(i, 0.9);
+          }
+        }}
+        onPointerUp={() => (scrub.current = null)}
+        onPointerCancel={() => (scrub.current = null)}
+        // phones: a horizontal strip under the nav (never under the cards at the
+        // bottom); wider screens: a vertical rail on the right. touch-action
+        // keeps a sideways drag on the strip ours while it can still scroll the page
+        className="fixed inset-x-3 top-[4.75rem] z-20 flex touch-pan-y items-center justify-between sm:inset-x-auto sm:right-3 sm:top-1/2 sm:-translate-y-1/2 sm:touch-none sm:flex-col sm:justify-start"
+      >
         {journey.stations.map((s, i) => (
           <button
             key={i}
             type="button"
+            data-station={i}
             onClick={() => goTo(i)}
             aria-label={`Go to ${label(s)}`}
             aria-current={active === i}
             data-cursor
-            className="group flex items-center justify-end gap-3"
+            // every button is the same fixed size and its dot sits dead centre, so
+            // the dots line up in one straight line however wide a label is
+            className="group relative flex h-9 flex-1 items-center justify-center sm:h-7 sm:w-7 sm:flex-none"
           >
-            <span className="mono-label pointer-events-none opacity-0 transition-opacity group-hover:opacity-100">{label(s)}</span>
+            {/* the name floats out to the left on hover, out of the layout */}
+            <span className="mono-label pointer-events-none absolute right-full mr-2 hidden whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100 sm:inline">
+              {label(s)}
+            </span>
             <span
               className={`block rounded-full transition-all ${active === i ? "h-3 w-3 bg-ink" : "h-1.5 w-1.5 bg-ink/40 group-hover:bg-ink"}`}
             />
@@ -183,6 +228,15 @@ export default function Journey() {
 }
 
 // anchors: the nav's #about / #work / #contact, and a project's slug
+// the station whose dot is nearest the pointer, along whichever way the bar runs
+function stationUnder(bar: HTMLElement, x: number, y: number) {
+  const r = bar.getBoundingClientRect();
+  const horizontal = r.width > r.height;
+  const n = bar.children.length;
+  const t = horizontal ? (x - r.left) / r.width : (y - r.top) / r.height;
+  return Math.max(0, Math.min(n - 1, Math.floor(t * n)));
+}
+
 function stationId(s: Station, journey: ReturnType<typeof buildJourney>) {
   if (s.kind === "intro") return "top";
   if (s.kind === "sun") return "about";
@@ -208,7 +262,7 @@ function Section({ id, side, children }: { id: string; side: Side; children: Rea
 function Intro() {
   return (
     <>
-      <p className="mono-label">A journey through my work</p>
+      <p className="mono-label">A journey through my work universe</p>
       <h1 className="display mt-3 text-[clamp(2rem,5vw,3.2rem)]">Jing Huang</h1>
       <p className="mt-3 leading-relaxed text-muted">
         Engineer and founder. Every world out here is something I built — scroll to travel through them.
@@ -240,7 +294,7 @@ function About() {
         M.S. in Artificial Intelligence at NJIT, after a B.S. in Computer Engineering at UIUC. My work spans biosensing
         wearables, embedded/IoT, full-stack web, and AI — and I&apos;ve led small teams to build and pitch ventures.
       </p>
-      <p className="mono-label mt-5">Everything orbiting me is a project →</p>
+      <p className="mono-label mt-5">Everything orbiting me is a project</p>
     </>
   );
 }

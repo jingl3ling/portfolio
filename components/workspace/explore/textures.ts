@@ -20,50 +20,64 @@ export function paintBands(
   h: number,
   seed: number,
   hue: number,
-  tone?: Tone // pastel / fixed-theme planets: bands cluster around this saturation and lightness
+  tone?: Tone // fixed-theme planets (pastels): the surface clusters around this saturation and lightness
 ) {
   const rnd = mulberry32(seed);
   ctx.globalAlpha = 1;
 
-  const bands = 8 + Math.floor(rnd() * 8);
-  let y = 0;
-  for (let i = 0; i < bands; i++) {
-    const bh = h / bands + (rnd() - 0.5) * (h / 32);
-    const hh = hue + (rnd() - 0.5) * (tone ? 14 : 36);
-    const sat = tone ? tone.sat + (rnd() - 0.5) * 14 : 32 + rnd() * 38;
-    const lit = tone ? tone.light + (rnd() - 0.5) * 12 : 34 + rnd() * 26;
-    ctx.fillStyle = `hsl(${hh} ${sat}% ${lit}%)`;
-    ctx.fillRect(0, y, w, bh + 1);
-    y += bh;
+  // Natural, muted colour: one hue per planet, low saturation, a narrow range
+  // of lightness. Bands blend into each other (a gradient through jittered
+  // colour stops, not hard-edged stripes), so the planet reads as one clean
+  // body — like a photograph of a gas giant — instead of a candy-striped ball.
+  const baseSat = tone ? tone.sat : 22 + rnd() * 20;
+  const baseLit = tone ? tone.light : 44 + rnd() * 12;
+  const spread = tone ? 6 : 8;
+  const stops = 9 + Math.floor(rnd() * 6);
+  const bandColor = (dh: number, ds: number, dl: number, a = 1) =>
+    `hsl(${hue + (rnd() - 0.5) * dh} ${baseSat + (rnd() - 0.5) * ds}% ${baseLit + (rnd() - 0.5) * dl}% / ${a})`;
+  const sky = ctx.createLinearGradient(0, 0, 0, h);
+  for (let i = 0; i <= stops; i++) {
+    const at = Math.min(1, Math.max(0, (i + (rnd() - 0.5) * 0.5) / stops));
+    sky.addColorStop(at, bandColor(tone ? 10 : 18, spread * 2, spread * 2.4));
   }
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
 
-  // each blob is drawn 3x so the texture wraps seamlessly
+  // each mark is drawn 3x so the texture wraps seamlessly
   const k = w / 512;
-  const blob = (x: number, yy: number, rx: number, ry: number, style: string, alpha: number) => {
+  const mark = (x: number, y: number, rx: number, ry: number, style: string, alpha: number) => {
     ctx.globalAlpha = alpha;
     ctx.fillStyle = style;
     for (const dx of [-w, 0, w]) {
       ctx.beginPath();
-      ctx.ellipse(x + dx, yy, rx * k, ry * k, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + dx, y, rx * k, ry * k, 0, 0, Math.PI * 2);
       ctx.fill();
     }
   };
-  for (let i = 0; i < 240; i++) {
-    blob(
-      rnd() * w,
-      rnd() * h,
-      20 + rnd() * 80,
-      1.5 + rnd() * 7,
-      tone
-        ? `hsl(${hue + (rnd() - 0.5) * 20} ${tone.sat + (rnd() - 0.5) * 20}% ${tone.light + (rnd() - 0.5) * 30}%)`
-        : `hsl(${hue + (rnd() - 0.5) * 50} ${30 + rnd() * 40}% ${25 + rnd() * 55}%)`,
-      0.05 + rnd() * 0.1
-    );
+  // long, faint streaks along the flow of the bands
+  for (let i = 0; i < 110; i++) {
+    const light = rnd() > 0.5;
+    mark(rnd() * w, rnd() * h, 40 + rnd() * 120, 0.8 + rnd() * 3.5, `hsl(${hue} ${baseSat}% ${light ? baseLit + 16 : baseLit - 16}%)`, 0.05 + rnd() * 0.05);
   }
-  for (let i = 0; i < 3; i++) {
-    blob(rnd() * w, h * (0.25 + rnd() * 0.5), 16 + rnd() * 26, 9 + rnd() * 12, tone ? `hsl(${hue} ${tone.sat}% 88%)` : `hsl(${hue + 20} 55% 70%)`, 0.22);
+  // fine grain: soft little blotches, the "tooth" that keeps a flat colour from looking CG
+  for (let i = 0; i < 520; i++) {
+    const light = rnd() > 0.5;
+    mark(rnd() * w, rnd() * h, 1.5 + rnd() * 6, 1 + rnd() * 3.5, `hsl(${hue} ${baseSat}% ${light ? baseLit + 14 : baseLit - 14}%)`, 0.03 + rnd() * 0.04);
   }
+  // one or two soft storms
+  for (let i = 0; i < 1 + Math.floor(rnd() * 2); i++) {
+    mark(rnd() * w, h * (0.3 + rnd() * 0.4), 18 + rnd() * 24, 8 + rnd() * 10, `hsl(${hue + 8} ${baseSat}% ${Math.min(88, baseLit + 22)}%)`, 0.16);
+  }
+
+  // the poles darken a touch, as limb and polar haze do on real photographs
   ctx.globalAlpha = 1;
+  const poles = ctx.createLinearGradient(0, 0, 0, h);
+  poles.addColorStop(0, "rgba(0,0,0,0.28)");
+  poles.addColorStop(0.16, "rgba(0,0,0,0)");
+  poles.addColorStop(0.84, "rgba(0,0,0,0)");
+  poles.addColorStop(1, "rgba(0,0,0,0.28)");
+  ctx.fillStyle = poles;
+  ctx.fillRect(0, 0, w, h);
 }
 
 // Multiply the canvas's alpha by a soft edge: fully faded at each border,

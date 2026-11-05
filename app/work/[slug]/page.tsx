@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { projects, getProject } from "@/lib/projects";
@@ -43,11 +45,18 @@ export default async function WorkPage({
     );
 
   const trackLabel = project.track === "technical" ? "Technical" : "Venture";
-  var projectMedia;
-  if (project.media_type === "image") {
+  let projectMedia: ReactNode;
+  if (project.media_type === "image" && project.image) {
     projectMedia = (
-      <div className="mt-14 flex aspect-[16/9] w-full items-center justify-center border border-line">
-        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+      // next/image: a right-sized AVIF/WebP, not the multi-MB original
+      <div className="relative mt-14 aspect-[16/9] w-full overflow-hidden border border-line">
+        <Image
+          src={project.image}
+          alt={project.title}
+          fill
+          sizes="(min-width: 1280px) 1180px, 100vw"
+          className="object-cover"
+        />
       </div>
     );
   } else if (project.media_type === "video") {

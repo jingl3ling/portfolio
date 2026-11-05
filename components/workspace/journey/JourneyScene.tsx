@@ -33,11 +33,27 @@ export default function JourneyScene({ journey, rootRef, reduced, lowPower }: Pr
   const scratch = useRef({ planet: new THREE.Vector3(), off: new THREE.Vector3() });
 
   const stars = useRef<THREE.Group>(null);
+  const sectionH = useRef(0); // one scroll section's height, measured on resize (not per frame)
   const smooth = useRef(0); // damped scroll position, in stations
   const placed = useRef(false); // first frame: start exactly where the page is scrolled
   const ringOpacity = useRef({ v: 0.1 });
   const p = useRef(new THREE.Vector3());
   const t = useRef(new THREE.Vector3());
+
+  // Reading offsetHeight inside useFrame forces a synchronous layout whenever
+  // the DOM is dirty (the text cards animate in as you scroll), so measure it
+  // when it changes instead.
+  useEffect(() => {
+    const el = rootRef.current?.firstElementChild as HTMLElement | null;
+    if (!el) return;
+    const measure = () => {
+      sectionH.current = el.offsetHeight;
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [rootRef, journey]);
 
   // react-hooks/immutability is switched off here on purpose: moving the
   // camera every frame inside useFrame is the intended three.js pattern (it
@@ -61,9 +77,8 @@ export default function JourneyScene({ journey, rootRef, reduced, lowPower }: Pr
     });
 
     // sections are 100svh tall, which isn't window.innerHeight on mobile
-    // (the URL bar), so measure the real one
-    const first = rootRef.current?.firstElementChild as HTMLElement | null;
-    const H = first?.offsetHeight || window.innerHeight;
+    // (the URL bar), so use the measured one (see the ResizeObserver below)
+    const H = sectionH.current || window.innerHeight;
     const last = journey.stations.length - 1;
     const want = THREE.MathUtils.clamp(window.scrollY / H, 0, last);
     // Damp the scroll position itself, then derive the pose from that. Wheel
@@ -110,8 +125,9 @@ export default function JourneyScene({ journey, rootRef, reduced, lowPower }: Pr
 
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[0, 0, 0]} intensity={3.2} decay={0} color="#ffe2b8" />
+      {/* little fill: the side turned away from the sun should fall into shadow */}
+      <ambientLight intensity={0.24} />
+      <pointLight position={[0, 0, 0]} intensity={3.6} decay={0} color="#fff0dc" />
       <group ref={stars}>
         <Stars radius={320} depth={160} count={lowPower ? 2500 : 6000} factor={5} fade speed={reduced ? 0 : 0.3} />
       </group>
@@ -136,12 +152,12 @@ function Sun() {
         <sphereGeometry args={[JOURNEY_SUN_RADIUS, 64, 64]} />
         <meshBasicMaterial color="#ffd9a0" />
       </mesh>
-      <sprite scale={[JOURNEY_SUN_RADIUS * 7, JOURNEY_SUN_RADIUS * 7, 1]}>
-        <spriteMaterial map={glow} blending={THREE.AdditiveBlending} depthWrite={false} transparent />
+      <sprite scale={[JOURNEY_SUN_RADIUS * 5.4, JOURNEY_SUN_RADIUS * 5.4, 1]}>
+        <spriteMaterial map={glow} blending={THREE.AdditiveBlending} depthWrite={false} transparent opacity={0.7} />
       </sprite>
-      {/* a second, much wider and fainter halo so the light seems to reach out into the system */}
-      <sprite scale={[JOURNEY_SUN_RADIUS * 20, JOURNEY_SUN_RADIUS * 20, 1]}>
-        <spriteMaterial map={glow} blending={THREE.AdditiveBlending} depthWrite={false} transparent opacity={0.22} />
+      {/* a second, much wider and fainter halo — just enough that the light seems to reach into the system */}
+      <sprite scale={[JOURNEY_SUN_RADIUS * 12, JOURNEY_SUN_RADIUS * 12, 1]}>
+        <spriteMaterial map={glow} blending={THREE.AdditiveBlending} depthWrite={false} transparent opacity={0.07} />
       </sprite>
     </group>
   );
@@ -181,65 +197,14 @@ function Planet({ jp, time }: { jp: JourneyPlanet; time: React.RefObject<{ t: nu
     <group ref={group} position={pos}>
       <mesh ref={body}>
         <sphereGeometry args={[radius, 64, 48]} />
-        <meshStandardMaterial map={map} roughness={0.92} metalness={0} emissive="#ffffff" emissiveMap={map} emissiveIntensity={0.1} />
+        <meshStandardMaterial map={map} roughness={0.95} metalness={0} />
       </mesh>
-      <Atmosphere radius={radius} hue={hue} />
       {cfg.ring && (
         <mesh rotation={[Math.PI / 2.25, 0.25, 0]}>
           <ringGeometry args={[radius * 1.45, radius * 2.15, 96]} />
-          <meshBasicMaterial color={`hsl(${hue} 55% 72%)`} transparent opacity={0.42} side={THREE.DoubleSide} depthWrite={false} />
+          <meshBasicMaterial color={`hsl(${hue}, 45%, 70%)`} transparent opacity={0.42} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
       )}
     </group>
-  );
-}
-
-// A soft rim of light around the planet: a slightly larger inside-out sphere
-// whose brightness peaks where the surface turns away from the camera. Reads
-// as atmosphere and lifts each planet off the black.
-const ATMOS_VERT = `
-  varying vec3 vNormal;
-  varying vec3 vViewPos;
-  void main() {
-    vNormal = normalize(normalMatrix * normal);
-    vec4 mv = modelViewMatrix * vec4(position, 1.0);
-    vViewPos = mv.xyz;
-    gl_Position = projectionMatrix * mv;
-  }
-`;
-// view direction per fragment (not a fixed +Z): a planet off to one side of the
-// screen is seen at an angle, and a fixed axis made the rim glow on one edge only.
-// On the inside-out sphere the normal points away from the camera, so
-// d = -dot(n, v) is 0 at its silhouette (outer edge of the halo) and rises
-// toward the middle, which the planet hides — the visible band is roughly
-// d in [0, 0.5], so the glow ramps UP toward the planet's own edge and fades
-// out into space, like an atmosphere.
-const ATMOS_FRAG = `
-  uniform vec3 uColor;
-  varying vec3 vNormal;
-  varying vec3 vViewPos;
-  void main() {
-    vec3 v = normalize(-vViewPos);
-    float d = -dot(vNormal, v);
-    float rim = pow(smoothstep(0.0, 0.5, d), 1.7);
-    gl_FragColor = vec4(uColor, 1.0) * rim * 0.75;
-  }
-`;
-
-function Atmosphere({ radius, hue }: { radius: number; hue: number }) {
-  const uniforms = useMemo(() => ({ uColor: { value: new THREE.Color().setHSL(hue / 360, 0.7, 0.64) } }), [hue]);
-  return (
-    <mesh scale={1.17}>
-      <sphereGeometry args={[radius, 48, 32]} />
-      <shaderMaterial
-        uniforms={uniforms}
-        vertexShader={ATMOS_VERT}
-        fragmentShader={ATMOS_FRAG}
-        side={THREE.BackSide}
-        blending={THREE.AdditiveBlending}
-        transparent
-        depthWrite={false}
-      />
-    </mesh>
   );
 }

@@ -40,8 +40,9 @@ export default function Scene({ planets, maxRadius, focus, onSelect, reduced, lo
 
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[0, 0, 0]} intensity={3.2} decay={0} color="#ffe2b8" />
+      {/* little fill: the side turned away from the sun should fall into shadow */}
+      <ambientLight intensity={0.24} />
+      <pointLight position={[0, 0, 0]} intensity={3.6} decay={0} color="#fff0dc" />
       <Stars radius={140} depth={70} count={lowPower ? 1500 : 4000} factor={4} fade speed={reduced ? 0 : 0.4} />
 
       <Sun focused={focus === SUN} dimmed={focus !== null && focus !== SUN} onSelect={onSelect} />
@@ -195,8 +196,8 @@ function Sun({
         <sphereGeometry args={[SUN_RADIUS, 48, 48]} />
         <meshBasicMaterial color="#ffd9a0" />
       </mesh>
-      <sprite scale={[SUN_RADIUS * 7, SUN_RADIUS * 7, 1]}>
-        <spriteMaterial map={glow} blending={THREE.AdditiveBlending} depthWrite={false} transparent />
+      <sprite scale={[SUN_RADIUS * 5.4, SUN_RADIUS * 5.4, 1]}>
+        <spriteMaterial map={glow} blending={THREE.AdditiveBlending} depthWrite={false} transparent opacity={0.7} />
       </sprite>
       <Html center position={[0, SUN_RADIUS + 0.9, 0]} style={{ pointerEvents: "none" }} zIndexRange={[20, 0]}>
         <Label text="Jing Huang" sub="the sun · about" visible={!focused} dimmed={dimmed} />
@@ -268,13 +269,13 @@ function Planet({
         onPointerOut={() => setHovered(null)}
       >
         <sphereGeometry args={[size, 48, 32]} />
-        <meshStandardMaterial map={map} roughness={0.92} metalness={0} emissive="#ffffff" emissiveMap={map} emissiveIntensity={0.1} />
+        <meshStandardMaterial map={map} roughness={0.95} metalness={0} />
       </mesh>
 
       {ring && (
         <mesh rotation={[Math.PI / 2.25, 0.25, 0]}>
           <ringGeometry args={[size * 1.45, size * 2.15, 96]} />
-          <meshBasicMaterial color={`hsl(${surfaceHue} 55% 72%)`} transparent opacity={0.42} side={THREE.DoubleSide} depthWrite={false} />
+          <meshBasicMaterial color={`hsl(${surfaceHue}, 45%, 70%)`} transparent opacity={0.42} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
       )}
 
