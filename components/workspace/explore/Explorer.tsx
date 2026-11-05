@@ -45,9 +45,14 @@ export default function Explorer() {
     // a pasted/edited link or back-forward navigation changes the hash
     // without remounting; our own select() uses replaceState, which doesn't fire this
     const onHash = () => setFocus(slugFromHash(valid));
+    // Arriving by a client-side link (a case study's "Return to explore"),
+    // this can mount before Next has pushed the new URL, so the hash read
+    // in the initial state came up empty — read it again once it has.
+    const raf = requestAnimationFrame(() => requestAnimationFrame(onHash));
     window.addEventListener("keydown", onKey);
     window.addEventListener("hashchange", onHash);
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("hashchange", onHash);
     };
@@ -82,10 +87,10 @@ export default function Explorer() {
       {/* DOM overlay: real text, links and buttons — keyboard- and screen-reader-reachable,
           unlike anything drawn inside the canvas */}
       <div className="pointer-events-none fixed inset-0 z-10 flex flex-col">
-        <div className="wrap flex flex-1 flex-col pt-24 md:pt-28">
+        <div className="wrap flex flex-1 flex-col pb-5 pt-24 md:pt-28">
           <div className="pointer-events-auto max-w-sm">
             <Link href="/" data-cursor className="mono-label transition-colors hover:text-accent">
-              ← Back to site
+              ← Back to journey
             </Link>
             <p className="mono-label mt-6">Prototype</p>
             <h1 className="display mt-2 text-[clamp(1.5rem,3vw,2.4rem)]">Explore my work universe</h1>
@@ -99,50 +104,8 @@ export default function Explorer() {
             <InfoPanel active={active} sun={focus === SUN} onClose={() => select(null)} />
           </div>
         </div>
-
-        <nav aria-label="Projects" className="pointer-events-auto flex gap-2 overflow-x-auto px-4 pb-5 pt-3 [scrollbar-width:none] md:justify-center">
-          <Chip label="Overview" selected={focus === null} onClick={() => select(null)} />
-          <Chip label="Jing" selected={focus === SUN} onClick={() => select(SUN)} />
-          {system.planets.map((p) => (
-            <Chip
-              key={p.project.slug}
-              label={p.project.title}
-              warm={p.project.track === "venture"}
-              selected={focus === p.project.slug}
-              onClick={() => select(p.project.slug)}
-            />
-          ))}
-        </nav>
       </div>
     </>
-  );
-}
-
-function Chip({
-  label,
-  selected,
-  warm,
-  onClick,
-}: {
-  label: string;
-  selected: boolean;
-  warm?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      data-cursor
-      className={`shrink-0 rounded-full border px-4 py-1.5 text-sm backdrop-blur-md transition-colors ${
-        selected
-          ? "border-ink bg-ink text-bg"
-          : `bg-[#05060a]/60 hover:border-ink ${warm ? "border-[#d9a066]/40" : "border-line"}`
-      }`}
-    >
-      {label}
-    </button>
   );
 }
 
@@ -174,7 +137,7 @@ function InfoPanel({
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <PanelLink href="/#about">About me</PanelLink>
-            <PanelLink href="/#work">Work list</PanelLink>
+            <PanelLink href="/">Take the journey</PanelLink>
           </div>
         </>
       )}
@@ -195,7 +158,7 @@ function InfoPanel({
             ))}
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
-            <PanelLink href={`/work/${p.slug}`} primary>
+            <PanelLink href={`/work/${p.slug}?from=explore`} primary>
               Open case study →
             </PanelLink>
           </div>

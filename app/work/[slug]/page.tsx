@@ -37,7 +37,7 @@ export default async function WorkPage({
   if (CustomPage)
     return (
       <>
-        <BackToWork />
+        <BackToWork slug={project.slug} />
         <CustomPage project={project} />
       </>
     );
@@ -90,7 +90,7 @@ export default async function WorkPage({
   return (
     <main className="wrap pt-32 pb-32 md:pt-40">
       <WorkBackdrop />
-      <BackToWork />
+      <BackToWork slug={project.slug} />
 
       <Reveal delay={0.05}>
         <div className="mono-label flex flex-wrap gap-x-4 gap-y-1">

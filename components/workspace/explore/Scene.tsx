@@ -5,7 +5,8 @@ import { useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { Html, OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { SUN, SUN_RADIUS, overviewDistance, type PlanetConfig } from "./system";
-import { makeGlowTexture, makePlanetTexture } from "./textures";
+import { makeGlowTexture } from "./textures";
+import { usePlanetSurface } from "./surface";
 
 type Controls = ComponentRef<typeof OrbitControls>;
 const ORIGIN = new THREE.Vector3();
@@ -235,8 +236,8 @@ function Planet({
   const { project, radius, angle0, omega, size, hue, seed, ring, yOff, spin } = cfg;
   const group = useRef<THREE.Group>(null);
   const body = useRef<THREE.Mesh>(null);
-  const map = useMemo(() => makePlanetTexture(seed, hue), [seed, hue]);
-  useEffect(() => () => map.dispose(), [map]);
+  // surface colour and thumbnail overlay come from the project itself
+  const { map, hue: surfaceHue } = usePlanetSurface(seed, hue, project.thumbnail, cfg.tone);
 
   useFrame((_, delta) => {
     const g = group.current;
@@ -273,7 +274,7 @@ function Planet({
       {ring && (
         <mesh rotation={[Math.PI / 2.25, 0.25, 0]}>
           <ringGeometry args={[size * 1.45, size * 2.15, 96]} />
-          <meshBasicMaterial color={`hsl(${hue} 55% 72%)`} transparent opacity={0.42} side={THREE.DoubleSide} depthWrite={false} />
+          <meshBasicMaterial color={`hsl(${surfaceHue} 55% 72%)`} transparent opacity={0.42} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
       )}
 

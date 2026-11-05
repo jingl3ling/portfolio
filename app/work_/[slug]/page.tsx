@@ -37,11 +37,11 @@ export default async function WorkPage({
     <main className="wrap pt-32 pb-32 md:pt-40">
       <Reveal>
         <Link
-          href="/#work"
+          href={`/#${project.slug}`}
           data-cursor
           className="mono-label transition-colors hover:text-accent"
         >
-          ← Back to work
+          ← Return to journey
         </Link>
       </Reveal>
 

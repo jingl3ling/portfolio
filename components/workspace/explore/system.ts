@@ -3,6 +3,20 @@ import { projects, type Project } from "@/lib/projects";
 export const SUN = "sun";
 export const SUN_RADIUS = 2.4;
 
+// How saturated / light a themed planet's bands are (the default bands are
+// mid-dark, which can't read as a pastel).
+export interface Tone {
+  sat: number;
+  light: number;
+}
+
+// Projects with a brand colour that should win over the thumbnail's dominant
+// hue and the track's default. Althy's theme is baby blue.
+const THEMES: Record<string, { hue: number } & Tone> = {
+  // lighting brightens the surface, so the bands sit darker than #89CFF0 itself
+  althy: { hue: 201, sat: 82, light: 62 },
+};
+
 export interface PlanetConfig {
   project: Project;
   radius: number; // orbit radius
@@ -10,6 +24,7 @@ export interface PlanetConfig {
   omega: number; // orbital speed, rad/s
   size: number;
   hue: number;
+  tone?: Tone; // set for a planet with a fixed theme colour; see THEMES
   seed: number; // stable per-slug seed for the procedural texture
   ring: boolean;
   yOff: number;
@@ -39,6 +54,7 @@ export function buildSystem(): { planets: PlanetConfig[]; maxRadius: number } {
 
   const make = (p: Project, i: number, start: number, step: number, warm: boolean): PlanetConfig => {
     const h = hash(p.slug);
+    const theme = THEMES[p.slug];
     const radius = start + i * step;
     return {
       project: p,
@@ -47,7 +63,8 @@ export function buildSystem(): { planets: PlanetConfig[]; maxRadius: number } {
       omega: 0.16 / Math.pow(radius / innerStart, 1.4),
       size: p.featured ? 1.05 : 0.8,
       seed: h,
-      hue: warm ? 5 + (h % 55) : 170 + (h % 90),
+      hue: theme ? theme.hue : warm ? 5 + (h % 55) : 170 + (h % 90),
+      tone: theme && { sat: theme.sat, light: theme.light },
       ring: !!p.award,
       yOff: (((h >> 5) % 100) / 100 - 0.5) * 0.9,
       spin: 0.12 + ((h >> 9) % 40) / 200,
