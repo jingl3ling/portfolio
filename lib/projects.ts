@@ -213,7 +213,7 @@ export const projects: Project[] = [
       "Pitched to investors and communities at Startup Grind, AI Tinkerers, NJII, and Columbia University.",
     ],
     stack: ["React", "Node / Express", "PostgreSQL", "OpenAI", "Vercel", "Railway", "Figma"],
-    links: [{ label: "althyplanner.com", href: "https://www.althyplanner.com/" }],
+    links: [{ label: "Live website", href: "https://althyapp.vercel.app/" }],
     featured: true,
   },
   {
