@@ -21,25 +21,48 @@ const hanken = Hanken_Grotesk({
 const STEPS = [
   {
     n: "01",
-    title: "The brief",
-    body: "Talk to Sasha on video, or just type. An occasion, a budget, a mood — that’s the whole brief.",
+    title: "The call",
+    body: "Sasha talks with you on live video and gives honest feedback on what you’re wearing right now.",
   },
   {
     n: "02",
-    title: "The fitting",
-    body: "A ZooWork agent works through the catalog. Every step it takes lands in a live “Working on it” feed, so you can watch the stylist think.",
+    title: "The search",
+    body: "Tell her the occasion and a budget. A ZooWork agent, running Claude Sonnet 5.5, researches it and searches the store’s catalog.",
   },
   {
     n: "03",
-    title: "The look",
-    body: "She puts together looks from women’s and men’s clothing, shoes and accessories. Add the pieces to your bag and check out.",
+    title: "The lookbook",
+    body: "She presents several outfits within budget as a lookbook. Ask for a change, like “make the shoes darker”, and only that piece updates.",
+  },
+];
+
+const HOOD = [
+  {
+    title: "Talking while she works",
+    body: "A fast conversational layer keeps Sasha chatting while the agent works in the background, and its steps stream into a live “Working on it” feed.",
+  },
+  {
+    title: "An agent per call",
+    body: "Each video call starts a ZooWork session. It researches the occasion and searches up to 1,046 items in the demo store, Fashion Barn, then curates outfits.",
+  },
+  {
+    title: "Checks she can’t skip",
+    body: "The backend verifies that every product is real, the sizing fits, and the total stays within budget. A $10,000 limit is enforced.",
+  },
+  {
+    title: "Plugs into any store",
+    body: "A Model Context Protocol catalog server connects the store. Tavus is the avatar, Daily carries the video, and a Node backend on Railway hosts it all.",
   },
 ];
 
 const TICKER = ["Fashion + Finance AI Hackathon", "AI Tinkerers × ZooWork", "1st place", "Saturday, November 7th"];
 
+// the demo video's id, from its YouTube link
+const videoId = (url?: string) => /(?:v=|youtu\.be\/)([\w-]{11})/.exec(url ?? "")?.[1];
+
 export default function SashaPage({ project }: { project: Project }) {
   const demo = project.embed ?? "";
+  const video = videoId(project.video);
   return (
     <div className={`${s.page} ${playfair.variable} ${hanken.variable}`}>
       <ScrollTopOnMount />
@@ -57,8 +80,8 @@ export default function SashaPage({ project }: { project: Project }) {
             <em>your personal stylist</em>
           </p>
           <p className={s.dek}>
-            Tell her the occasion and the budget. A video avatar and a ZooWork agent take it from there and put the
-            look together.
+            A live video stylist for online stores. She gives honest feedback on what you’re wearing, then searches the
+            catalog for your occasion and budget and builds a lookbook.
           </p>
         </div>
 
@@ -114,8 +137,8 @@ export default function SashaPage({ project }: { project: Project }) {
             </p>
           </blockquote>
           <p className={s.briefNote}>
-            That’s all Sasha needs. She was built at the Fashion + Finance AI Hackathon and lives inside{" "}
-            <em>Fashion Barn</em>, a demo boutique, where she shops the whole store for you.
+            That’s all Sasha needs. She was built at the Fashion + Finance AI Hackathon and plugs straight into a store;
+            in our demo that’s <em>Fashion Barn</em>, a boutique with more than a thousand pieces to search.
           </p>
         </section>
 
@@ -131,14 +154,35 @@ export default function SashaPage({ project }: { project: Project }) {
           </ol>
         </section>
 
+        {video && (
+          <section className={`${s.col} ${s.watch}`} aria-labelledby="sa-watch">
+            <div className={s.tryHead}>
+              <h2 id="sa-watch" className={s.h2}>
+                Watch her <em>work</em>
+              </h2>
+              <p>Sasha finds an outfit for a wedding in Capri, start to finish. Demo video by Michael Halpert.</p>
+            </div>
+            <div className={`${s.frame} ${s.videoFrame}`}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${video}?rel=0`}
+                title="AI Stylist Sasha Finds Capri Wedding Outfit"
+                loading="lazy"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+          </section>
+        )}
+
         <section className={`${s.col} ${s.try}`} aria-labelledby="sa-try">
           <div className={s.tryHead}>
             <h2 id="sa-try" className={s.h2}>
               Meet <em>Sasha</em>
             </h2>
             <p>
-              This is the live demo. Open <strong>Stylist</strong> in the corner of the shop to talk to her, or type her
-              a brief.
+              This is the live demo. Open <strong>Stylist</strong> in the corner of the shop and type her a brief. The video
+              call runs on a small monthly allowance, so if she’s resting, typing still works.
             </p>
           </div>
           <div className={s.frame}>
@@ -158,6 +202,20 @@ export default function SashaPage({ project }: { project: Project }) {
           </p>
         </section>
 
+        <section className={`${s.col} ${s.hood}`} aria-labelledby="sa-hood">
+          <h2 id="sa-hood" className={s.kicker}>
+            Under the hood
+          </h2>
+          <ul>
+            {HOOD.map((h) => (
+              <li key={h.title}>
+                <h3>{h.title}</h3>
+                <p>{h.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section className={s.result} aria-labelledby="sa-result">
           <div className={`${s.col} ${s.resultIn}`}>
             <p className={s.resultKicker}>The result</p>
@@ -168,6 +226,7 @@ export default function SashaPage({ project }: { project: Project }) {
               Sasha won the Fashion + Finance AI Hackathon, hosted by AI Tinkerers and ZooWork on Saturday, November 7th,
               10am to 6pm.
             </p>
+            {project.attribution && <p className={s.credit}>{project.attribution}</p>}
             <ul className={s.stack} aria-label="Built with">
               {project.stack.map((t) => (
                 <li key={t}>{t}</li>

@@ -116,6 +116,20 @@
 .steps h3 { margin: 0.9rem 0 0.5rem; font: 500 1.6rem/1.15 var(--sa-serif); }
 .steps p { color: var(--sa-muted); font-size: 1rem; }
 
+/* ---- the demo video ---- */
+.watch { padding-bottom: 5.5rem; }
+.frame.videoFrame { height: auto; min-height: 0; aspect-ratio: 16 / 9; background: #000; } /* 2 classes: must beat .frame, which comes later */
+
+/* ---- under the hood ---- */
+.hood { padding-bottom: 6rem; }
+.hood ul {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 3rem;
+}
+.hood li { border-top: 1px solid var(--sa-rule); padding-top: 1rem; }
+.hood h3 { margin: 0 0 0.5rem; font: 500 1.5rem/1.2 var(--sa-serif); }
+.hood p { color: var(--sa-muted); font-size: 1rem; }
+
 /* ---- the live demo ---- */
 .try { padding-bottom: 6rem; }
 .tryHead {
@@ -148,13 +162,14 @@
 .resultTitle { margin: 1rem 0 1.4rem; font: 500 clamp(4.5rem, 14vw, 10rem)/0.9 var(--sa-serif); letter-spacing: -0.035em; }
 .resultTitle em { color: var(--sa-lime); }
 .resultBody { font-size: 1.15rem; color: #b9c9b3; max-width: 44ch; }
+.credit { margin-top: 1.6rem; font-size: 0.95rem; color: #9fb596; max-width: 52ch; }
 .stack { list-style: none; margin: 2.2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .stack li {
   border: 1px solid rgba(196, 255, 46, 0.45); color: #dcebd2; border-radius: 999px;
   padding: 0.3rem 0.9rem; font: 600 0.72rem/1.4 var(--sa-sans); letter-spacing: 0.14em; text-transform: uppercase;
 }
 .cta {
-  display: inline-block; margin-top: 2.4rem; padding: 0.8rem 1.6rem; border-radius: 999px;
+  display: inline-block; margin: 2.4rem 0.75rem 0 0; padding: 0.8rem 1.6rem; border-radius: 999px;
   background: var(--sa-lime); color: var(--sa-ink) !important;
   font: 700 0.8rem/1 var(--sa-sans); letter-spacing: 0.16em; text-transform: uppercase;
   transition: background 0.2s;
@@ -168,6 +183,8 @@
   .rosetteNo { font-size: 1.9rem; }
   .steps ol { grid-template-columns: 1fr; gap: 2rem; }
   .tryHead { grid-template-columns: 1fr; gap: 1rem; }
+  .hood ul { grid-template-columns: 1fr; gap: 1.8rem; }
+  .frame.videoFrame { min-height: 0; }
   .frame { min-height: 30rem; box-shadow: 6px 6px 0 var(--sa-lime), 6px 6px 0 1px var(--sa-ink); }
   .brief { padding-top: 4rem; }
 }
