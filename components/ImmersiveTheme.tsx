@@ -3,16 +3,19 @@
 import { useLayoutEffect } from "react";
 
 /**
- * Overrides the global CSS tokens for the current route (dark, light text),
- * so every shared component — nav, sections, cursor — recolors automatically.
+ * Overrides the global CSS tokens for the current route (dark, light text by
+ * default), so every shared component — nav, sections, cursor — recolors
+ * automatically. Pass `light` for a light page (dark ink on a pale `bg`).
  * Restores the previous values on unmount.
  */
 export default function ImmersiveTheme({
   accent = "#8ec5ff",
   bg = "#0b0b12",
+  light = false,
 }: {
   accent?: string;
   bg?: string;
+  light?: boolean;
 }) {
   // layout effect, not useEffect: apply the dark tokens before the first paint
   // rather than a frame later, shrinking the window where the page is the
@@ -21,10 +24,10 @@ export default function ImmersiveTheme({
     const el = document.documentElement;
     const vars: Record<string, string> = {
       "--bg": bg,
-      "--ink": "#f4f4f5",
-      "--muted": "#a1a1aa",
-      "--faint": "#71717a",
-      "--line": "rgba(255,255,255,0.14)",
+      "--ink": light ? "#14110f" : "#f4f4f5",
+      "--muted": light ? "#6a625a" : "#a1a1aa",
+      "--faint": light ? "#8f867c" : "#71717a",
+      "--line": light ? "rgba(20,17,15,0.16)" : "rgba(255,255,255,0.14)",
       "--accent": accent,
       "--accent-ink": accent,
     };
@@ -33,7 +36,8 @@ export default function ImmersiveTheme({
       prev[k] = el.style.getPropertyValue(k);
       el.style.setProperty(k, v);
     });
-    el.classList.add("immersive");
+    // "immersive" is the dark-route class (screen-blended cursor, no ambient orbs)
+    if (!light) el.classList.add("immersive");
     return () => {
       el.classList.remove("immersive");
       Object.entries(prev).forEach(([k, v]) => {
@@ -41,7 +45,7 @@ export default function ImmersiveTheme({
         else el.style.removeProperty(k);
       });
     };
-  }, [accent, bg]);
+  }, [accent, bg, light]);
 
   return null;
 }

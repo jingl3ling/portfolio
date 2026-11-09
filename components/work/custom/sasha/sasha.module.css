@@ -1,0 +1,177 @@
+/* Sasha — a fashion magazine issue: ivory paper, black ink, a high-contrast
+   Didone serif, hairline rules, and the hackathon cover's acid lime used the
+   way an editor uses a highlighter — a rosette, a ticker, one word. */
+.page {
+  --sa-paper: #f2ede4;
+  --sa-ink: #14110f;
+  --sa-muted: #6a625a;
+  --sa-rule: rgba(20, 17, 15, 0.22);
+  --sa-lime: #c4ff2e;
+  --sa-forest: #0c1a12;
+
+  --sa-serif: var(--font-playfair), "Didot", "Bodoni 72", Georgia, serif;
+  --sa-sans: var(--font-hanken-sasha), "Helvetica Neue", Arial, sans-serif;
+
+  background: var(--sa-paper);
+  color: var(--sa-ink);
+  font: 400 1.0625rem/1.65 var(--sa-sans);
+  min-height: 100vh;
+  overflow-x: clip;
+}
+.page :focus-visible { outline: 2px solid var(--sa-ink); outline-offset: 3px; }
+.page ::selection { background: var(--sa-lime); color: var(--sa-ink); }
+/* :where() = zero specificity, so the class rules below can override these defaults */
+:where(.page) p { margin: 0; max-width: 60ch; }
+.page em { font-family: var(--sa-serif); font-style: italic; font-weight: 400; }
+
+.col {
+  max-width: 72rem; margin-inline: auto;
+  padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+}
+
+/* ---- hero: the masthead ---- */
+.hero {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 3.5rem;
+  align-items: end; padding-top: 8.5rem; padding-bottom: 3.5rem;
+}
+.heroText { min-width: 0; }
+.masthead {
+  display: flex; justify-content: space-between; gap: 1rem;
+  border-top: 2px solid var(--sa-ink); border-bottom: 1px solid var(--sa-rule);
+  padding: 0.55rem 0;
+  font: 600 0.72rem/1.3 var(--sa-sans); letter-spacing: 0.22em; text-transform: uppercase;
+}
+.title {
+  font: 500 clamp(5.5rem, 17vw, 12.5rem)/0.82 var(--sa-serif);
+  letter-spacing: -0.035em; margin: 1.4rem 0 0;
+}
+.subtitle { margin-top: 0.85rem; }
+.subtitle em { font-size: clamp(1.7rem, 4vw, 2.7rem); line-height: 1.1; }
+.dek { margin-top: 1.6rem; font-size: 1.15rem; color: var(--sa-muted); }
+
+/* ---- the cover with a rosette ---- */
+.cover { position: relative; margin: 0; min-width: 0; }
+.coverImg {
+  overflow: hidden; background: var(--sa-forest);
+  aspect-ratio: 1400 / 855;
+  box-shadow: 0 1px 0 var(--sa-rule), 0 24px 50px -28px rgba(20, 17, 15, 0.55);
+}
+.coverImg img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cover figcaption {
+  margin-top: 0.7rem;
+  font: 600 0.68rem/1.4 var(--sa-sans); letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--sa-muted);
+}
+.rosette {
+  position: absolute; left: -2.2rem; top: -2.6rem;
+  width: 7.6rem; height: 7.6rem; border-radius: 50%;
+  background: var(--sa-lime); color: var(--sa-ink);
+  display: grid; place-items: center;
+  box-shadow: 0 10px 24px -10px rgba(20, 17, 15, 0.5);
+  transform: rotate(-8deg);
+}
+.ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: sa-spin 36s linear infinite; }
+.ring text { font: 700 8.6px/1 var(--sa-sans); letter-spacing: 0.17em; fill: var(--sa-ink); }
+.rosetteNo { font: italic 500 2.3rem/1 var(--sa-serif); }
+@keyframes sa-spin { to { transform: rotate(360deg); } }
+
+/* ---- ticker ---- */
+.ticker { background: var(--sa-forest); color: var(--sa-lime); overflow: hidden; white-space: nowrap; }
+.tickerTrack { display: flex; width: max-content; animation: sa-tick 38s linear infinite; }
+.tickerRow { display: flex; flex: none; }
+.tickerRow span {
+  font: italic 400 1.5rem/1 var(--sa-serif);
+  padding: 1.05rem 0; display: inline-flex; align-items: center;
+}
+.tickerRow span::after { content: "✦"; font: 400 0.8rem/1 var(--sa-sans); margin: 0 2rem; opacity: 0.8; }
+@keyframes sa-tick { to { transform: translateX(-50%); } }
+
+/* ---- the brief ---- */
+.brief { padding-top: 6rem; padding-bottom: 3rem; }
+.kicker {
+  margin: 0 0 1.6rem; font: 600 0.72rem/1.3 var(--sa-sans);
+  letter-spacing: 0.22em; text-transform: uppercase;
+  border-top: 1px solid var(--sa-ink); padding-top: 0.7rem;
+}
+.quote { margin: 0; }
+.quote p {
+  max-width: 20ch; font: 400 clamp(2.6rem, 7vw, 5.4rem)/1.04 var(--sa-serif); letter-spacing: -0.02em;
+}
+.quote em {
+  background: linear-gradient(transparent 62%, var(--sa-lime) 62%, var(--sa-lime) 92%, transparent 92%);
+  padding-inline: 0.06em;
+}
+.briefNote { margin-top: 2rem; font-size: 1.15rem; color: var(--sa-muted); max-width: 46ch; }
+.briefNote em { color: var(--sa-ink); }
+
+/* ---- three steps ---- */
+.steps { padding-top: 2rem; padding-bottom: 5.5rem; }
+.steps ol {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem;
+}
+.steps li { border-top: 1px solid var(--sa-ink); padding-top: 1.1rem; }
+.stepNo { font: italic 400 2.6rem/1 var(--sa-serif); }
+.steps h3 { margin: 0.9rem 0 0.5rem; font: 500 1.6rem/1.15 var(--sa-serif); }
+.steps p { color: var(--sa-muted); font-size: 1rem; }
+
+/* ---- the live demo ---- */
+.try { padding-bottom: 6rem; }
+.tryHead {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); gap: 2.5rem; align-items: end;
+  border-top: 2px solid var(--sa-ink); padding-top: 1.4rem; margin-bottom: 1.6rem;
+}
+.h2 { margin: 0; font: 500 clamp(2.6rem, 6vw, 4.6rem)/1 var(--sa-serif); letter-spacing: -0.025em; }
+.tryHead p { color: var(--sa-muted); font-size: 1rem; }
+.tryHead strong { color: var(--sa-ink); font-weight: 600; }
+.frame {
+  height: min(78svh, 54rem); min-height: 34rem;
+  background: #fff; border: 1px solid var(--sa-ink);
+  box-shadow: 10px 10px 0 var(--sa-lime), 10px 10px 0 1px var(--sa-ink);
+}
+.frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.frameNote {
+  margin-top: 2.6rem; max-width: none; font-size: 0.9rem; color: var(--sa-muted);
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 1.1rem; /* clear of the frame's offset shadow */
+}
+.frameNote a { color: var(--sa-ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.frameNote a:hover { background: var(--sa-lime); }
+
+/* ---- the result ---- */
+.result { background: var(--sa-forest); color: #eef5e6; padding: 6rem 0 7rem; }
+.resultIn { display: block; }
+.resultKicker {
+  font: 600 0.72rem/1.3 var(--sa-sans); letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--sa-lime);
+}
+.resultTitle { margin: 1rem 0 1.4rem; font: 500 clamp(4.5rem, 14vw, 10rem)/0.9 var(--sa-serif); letter-spacing: -0.035em; }
+.resultTitle em { color: var(--sa-lime); }
+.resultBody { font-size: 1.15rem; color: #b9c9b3; max-width: 44ch; }
+.stack { list-style: none; margin: 2.2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.stack li {
+  border: 1px solid rgba(196, 255, 46, 0.45); color: #dcebd2; border-radius: 999px;
+  padding: 0.3rem 0.9rem; font: 600 0.72rem/1.4 var(--sa-sans); letter-spacing: 0.14em; text-transform: uppercase;
+}
+.cta {
+  display: inline-block; margin-top: 2.4rem; padding: 0.8rem 1.6rem; border-radius: 999px;
+  background: var(--sa-lime); color: var(--sa-ink) !important;
+  font: 700 0.8rem/1 var(--sa-sans); letter-spacing: 0.16em; text-transform: uppercase;
+  transition: background 0.2s;
+}
+.cta:hover { background: #fff; }
+
+/* ---- small screens ---- */
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 3.2rem; padding-top: 7.5rem; }
+  .rosette { left: auto; right: -0.4rem; top: -3.2rem; width: 6.4rem; height: 6.4rem; }
+  .rosetteNo { font-size: 1.9rem; }
+  .steps ol { grid-template-columns: 1fr; gap: 2rem; }
+  .tryHead { grid-template-columns: 1fr; gap: 1rem; }
+  .frame { min-height: 30rem; box-shadow: 6px 6px 0 var(--sa-lime), 6px 6px 0 1px var(--sa-ink); }
+  .brief { padding-top: 4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring, .tickerTrack { animation: none; }
+}

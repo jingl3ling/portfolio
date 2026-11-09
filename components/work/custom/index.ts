@@ -3,6 +3,7 @@ import type { Project } from "@/lib/projects";
 import BuzzPage from "./buzz/BuzzPage";
 import HackclawPage from "./hackclaw/HackclawPage";
 import HermesdayPage from "./hermesday/HermesdayPage";
+import SashaPage from "./sasha/SashaPage";
 
 /**
  * Case studies with their own bespoke design, keyed by project slug.
@@ -15,4 +16,5 @@ export const customPages: Record<string, ComponentType<{ project: Project }>> = 
   hermesday: HermesdayPage,
   "openclaw-agent-team": HackclawPage,
   buzz: BuzzPage,
+  sasha: SashaPage,
 };

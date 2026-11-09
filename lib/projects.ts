@@ -30,6 +30,30 @@ export interface Project {
 export const projects: Project[] = [
   // ---------------- TECHNICAL ----------------
   {
+    slug: "sasha",
+    title: "Sasha",
+    track: "technical",
+    year: "2026",
+    tagline:
+      "A personal AI stylist: tell her the occasion and the budget, and a video avatar plus a ZooWork agent put the look together. 1st place at the Fashion + Finance AI Hackathon.",
+    tags: ["Hackathon", "AI agent", "Video avatar", "ZooWork"],
+    thumbnail: "/img/fnf-hackathon-cover.avif",
+    media_type: "embeded",
+    embed: "https://sashastylist-production.up.railway.app/site/",
+    award: "1st place — Fashion + Finance AI Hackathon",
+    overview:
+      "Sasha is a personal AI stylist, built at the Fashion + Finance AI Hackathon (AI Tinkerers × ZooWork) and placed inside Fashion Barn, a demo boutique. Tell her an occasion and a budget — “summer wedding in Italy, about $800” — by video or by typing, and a ZooWork agent works through the catalog while every step shows up in a live feed.",
+    highlights: [
+      "Won 1st place at the Fashion + Finance AI Hackathon, hosted by AI Tinkerers and ZooWork on Saturday, November 7th.",
+      "A video stylist you can talk to (a Tavus avatar), with a plain text box as the fallback.",
+      "A ZooWork agent does the shopping, and its steps stream into a “Working on it” feed so you can watch the stylist think.",
+      "Lives inside Fashion Barn: women’s and men’s clothing, shoes and accessories, curated looks, and a bag with a simulated checkout.",
+    ],
+    stack: ["ZooWork agent", "Tavus", "Node / Express", "JavaScript", "Railway"],
+    links: [{ label: "Live demo", href: "https://sashastylist-production.up.railway.app/site/" }],
+    featured: true,
+  },
+  {
     slug: "hermesday",
     title: "Hermesday",
     track: "technical",
