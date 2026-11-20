@@ -25,9 +25,11 @@ export interface Project {
   links?: ProjectLink[];
   attribution?: string; // honesty flag (team / forked / client)
   featured?: boolean;
+  hidden?: boolean; // kept in the data but left off the site: no planet, no list entry, no case-study page
 }
 
-export const projects: Project[] = [
+// Everything, hidden projects included. Use `projects` (below) for anything the site shows.
+const allProjects: Project[] = [
   // ---------------- TECHNICAL ----------------
   {
     slug: "sasha",
@@ -59,6 +61,7 @@ export const projects: Project[] = [
     attribution:
       "Built as a team at the Fashion + Finance AI Hackathon with Arjun Pillai, Soham Banerjee and Michael Halpert, with the work split evenly. Demo video by Michael Halpert.",
     featured: true,
+    hidden: true, // hidden for now; delete this line to put Sasha back on the site
   },
   {
     slug: "hermesday",
@@ -342,6 +345,9 @@ export const experiments: Experiment[] = [
     kind: "music",
   },
 ];
+
+// What the site shows: the journey, the explorer, the work list and the case-study routes all read this.
+export const projects: Project[] = allProjects.filter((p) => !p.hidden);
 
 export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
 export const byTrack = (track: Track) => projects.filter((p) => p.track === track);
