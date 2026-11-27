@@ -61,7 +61,6 @@ const allProjects: Project[] = [
     attribution:
       "Built as a team at the Fashion + Finance AI Hackathon with Arjun Pillai, Soham Banerjee and Michael Halpert, with the work split evenly. Demo video by Michael Halpert.",
     featured: true,
-    hidden: true, // hidden for now; delete this line to put Sasha back on the site
   },
   {
     slug: "hermesday",
